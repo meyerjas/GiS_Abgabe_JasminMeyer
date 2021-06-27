@@ -42,5 +42,16 @@ header {
 
 h1 {
     color: white;
-    text-shadow: 1px 1px black;
+    text-shadow: 2px 1px black;
+}
+
+#backToStart {
+    color: bisque;
+    font-size: medium;
+    opacity: 75%;
+}
+
+#backToStart:hover {
+    opacity: 100%;
+    font-size: large;
 }
