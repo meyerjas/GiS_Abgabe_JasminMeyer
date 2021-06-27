@@ -1,0 +1,46 @@
+body {
+    text-align: center;
+    background-image: url("pictures/light-live-background-css.jpg");
+}
+
+header {
+    background-image: url("pictures/BG2.png");
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    width: 300px;
+    height: 100px;
+    padding: 20px 10px 10px 10px;
+    border-radius: 100px;
+    border-width: 5px;
+    border-color: black;
+    border-style: ridge;
+    display: inline-block;
+    margin: 10px;
+}
+
+.buttons {
+    background-image: url("pictures/HG.png");
+    width: 400px;
+    height: 600px;
+    padding: 10px;
+    border-radius: 5px;
+    border-width: 3px;
+    border-color: black;
+    border-style: ridge;
+    display: inline-block;
+}
+
+.buttonsDos {
+    background: black;
+    color: white;
+    height: 50px;
+    width: 150px;
+    padding: 10px;
+    margin: 10px;
+    border: white;
+    border-style: ridge;
+}
+
+h1 {
+    color: white;
+    text-shadow: 1px 1px black;
+}
