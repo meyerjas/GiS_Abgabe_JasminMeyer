@@ -1,0 +1,23 @@
+{
+    "name": "gis_abgabe_jasminmeyer",
+    "version": "1.0.0",
+    "description": "",
+    "main": "script.js",
+    "dependencies": {
+        "node.js": "^0.0.1-security"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "start": "node script.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/meyerjas/GiS_Abgabe_JasminMeyer.git"
+    },
+    "author": "jasmin meyer",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/meyerjas/GiS_Abgabe_JasminMeyer/issues"
+    },
+    "homepage": "https://github.com/meyerjas/GiS_Abgabe_JasminMeyer#readme"
+}
