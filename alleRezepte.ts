@@ -3,12 +3,11 @@ namespace Rezeptesammlung {
     export interface Rezept {
         _id: string;
         titel: string;
-        zutat: string;
-        anzahl: number;
-        einheit: string;
+        //zutat: string;
+        //anzahl: number;
+        //einheit: string;
         anleitung: string;
         autor: string;
-        favorit: boolean;
     }
 
     async function RezepteZeigen(): Promise<void> {
@@ -39,21 +38,46 @@ namespace Rezeptesammlung {
             titelDiv.innerHTML = rezepte[i].titel;
 
             //Zutatenliste
-            let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-            titelDiv.classList.add("rezeptZutat");
-            titelDiv.innerHTML = rezepte[i].zutat;
+            //let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            //zutatenDiv.classList.add("rezeptZutat");
+            //zutatenDiv.innerHTML = rezepte[i].Zutat;
 
+            //Anleitung
+            let anleitungDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            anleitungDiv.classList.add("rezeptTitel");
+            anleitungDiv.innerHTML = rezepte[i].anleitung;
 
+            //Autor
+            let autorDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            autorDiv.classList.add("rezeptTitel");
+            autorDiv.innerHTML = rezepte[i].autor;
 
+            //FavoButton
+            let favoButton: HTMLButtonElement = rezeptDiv.appendChild(document.createElement("button"));
+            favoButton.classList.add("favoButton");
+            favoButton.setAttribute("type", "button");
+            favoButton.innerHTML = "Favorisieren";
+            favoButton.setAttribute("RezeptIndex", i.toString());
 
+            //Event zum Favorisieren
+            favoButton?.addEventListener("click", addToFavs);
+            
+                
+        }
 
+        function addToFavs (_event: Event): void {
+            //Rezeptauswahl
+            let target: HTMLElement = <HTMLElement>_event.target;
+            let index: number = parseInt(target.getAttribute("RezeptIndex"));
+            let auswahl: Rezept = rezepte[index];
 
+            let favorisieren: Rezept[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
+            console.log(favorisieren);
 
-
-
-
-
-
+            favorisieren.push(auswahl);
+            localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorisieren));
+        }
+            
 
         }
 
@@ -63,38 +87,8 @@ namespace Rezeptesammlung {
 
             function addToFavs():void {
                 localStorage.setItem();
-            }*/
-        }
-
-
-
-
-
-
-
-
-
+            }
+        }*/
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}

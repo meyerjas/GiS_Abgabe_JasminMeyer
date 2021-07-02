@@ -20,17 +20,44 @@ var Rezeptesammlung;
             titelDiv.classList.add("rezeptTitel");
             titelDiv.innerHTML = rezepte[i].titel;
             //Zutatenliste
-            let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
-            titelDiv.classList.add("rezeptZutat");
-            titelDiv.innerHTML = rezepte[i].zutat;
+            //let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            //zutatenDiv.classList.add("rezeptZutat");
+            //zutatenDiv.innerHTML = rezepte[i].Zutat;
+            //Anleitung
+            let anleitungDiv = rezeptDiv.appendChild(document.createElement("div"));
+            anleitungDiv.classList.add("rezeptTitel");
+            anleitungDiv.innerHTML = rezepte[i].anleitung;
+            //Autor
+            let autorDiv = rezeptDiv.appendChild(document.createElement("div"));
+            autorDiv.classList.add("rezeptTitel");
+            autorDiv.innerHTML = rezepte[i].autor;
+            //FavoButton
+            let favoButton = rezeptDiv.appendChild(document.createElement("button"));
+            favoButton.classList.add("favoButton");
+            favoButton.setAttribute("type", "button");
+            favoButton.innerHTML = "Favorisieren";
+            favoButton.setAttribute("RezeptIndex", i.toString());
+            //Event zum Favorisieren
+            favoButton?.addEventListener("click", addToFavs);
         }
-        /*let favButton: HTMLCollectionOf<HTMLButtonElement> = document.getElementsByTagName("favoButton");
-        for (let j: number = 0; j < favButton.length; j++) {
-            favButton[j].addEventListener("click", addToFavs);
-
-            function addToFavs():void {
-                localStorage.setItem();
-            }*/
+        function addToFavs(_event) {
+            //Rezeptauswahl
+            let target = _event.target;
+            let index = parseInt(target.getAttribute("RezeptIndex"));
+            let auswahl = rezepte[index];
+            let favorisieren = JSON.parse(localStorage.getItem(Rezeptesammlung.favoritenLocalStorage));
+            console.log(favorisieren);
+            favorisieren.push(auswahl);
+            localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, JSON.stringify(favorisieren));
+        }
     }
+    /*let favButton: HTMLCollectionOf<HTMLButtonElement> = document.getElementsByTagName("favoButton");
+    for (let j: number = 0; j < favButton.length; j++) {
+        favButton[j].addEventListener("click", addToFavs);
+
+        function addToFavs():void {
+            localStorage.setItem();
+        }
+    }*/
 })(Rezeptesammlung || (Rezeptesammlung = {}));
 //# sourceMappingURL=alleRezepte.js.map
