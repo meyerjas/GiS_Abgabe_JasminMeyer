@@ -4,9 +4,13 @@
     "description": "",
     "main": "script.js",
     "dependencies": {
+        "@types/mongodb": "^3.6.19",
+        "mongodb": "^3.6.9",
         "node.js": "^0.0.1-security"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "@types/node": "^15.12.5"
+    },
     "scripts": {
         "start": "node script.js"
     },

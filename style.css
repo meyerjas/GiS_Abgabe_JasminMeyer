@@ -6,10 +6,10 @@ body {
 header {
     background-image: url("pictures/BG2.png");
     font-family: Georgia, 'Times New Roman', Times, serif;
-    width: 300px;
+    width: 400px;
     height: 100px;
     padding: 20px 10px 10px 10px;
-    border-radius: 100px;
+    border-radius: 30px;
     border-width: 5px;
     border-color: black;
     border-style: ridge;
@@ -29,29 +29,33 @@ header {
     display: inline-block;
 }
 
-.buttonsDos {
-    background: black;
-    color: white;
-    height: 50px;
-    width: 150px;
+#navbar {
+    background: grey;
+    height: 20px;
+    width: 400px;
     padding: 10px;
     margin: 10px;
-    border: white;
-    border-style: ridge;
+    border: darkblue;
+    position: fixed;
+    left: 545px;
+    top: 0px;
+    border-radius: 20px;
+    font-size: medium;
+}
+
+a {
+    color: wheat;
+    text-shadow: 1px 1px black;
+    opacity: 60%;
+}
+
+a:hover {
+    color: lightblue;
+    opacity: 100%;
+    font-size: large;
 }
 
 h1 {
     color: white;
     text-shadow: 2px 1px black;
-}
-
-#backToStart {
-    color: bisque;
-    font-size: medium;
-    opacity: 75%;
-}
-
-#backToStart:hover {
-    opacity: 100%;
-    font-size: large;
 }
