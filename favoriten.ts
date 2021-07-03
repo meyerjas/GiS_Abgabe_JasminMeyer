@@ -1,6 +1,8 @@
 namespace Rezeptesammlung {
+
     let favorisierteRezepte: HTMLDivElement = document.querySelector(".fav");
     let localRez: Rezept[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
+    let localZut: Zutat[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
 
     //Rezepte reinladen
     for (let i: number = 0; i < localRez.length; i++) {
@@ -14,10 +16,24 @@ namespace Rezeptesammlung {
         titelDiv.classList.add("rezeptTitel");
         titelDiv.innerHTML = localRez[i].titel;
 
-        //Zutatenliste
-        //let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-        //zutatenDiv.classList.add("rezeptZutat");
-        //zutatenDiv.innerHTML = rezepte[i].Zutat;
+        for (let k: number = 0; k < localZut.length; k++) {
+            if (localZut[k].referenzName == localRez[i].titel) {
+            //Zutatenname
+            let zutatenNameDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenNameDiv.classList.add("rezeptZutatenName");
+            zutatenNameDiv.innerHTML = localZut[i].name;
+
+            //Zutateneinheit
+            let zutatenUnitDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenUnitDiv.classList.add("rezeptZutatenUnit");
+            zutatenUnitDiv.innerHTML = localZut[i].einheit;
+
+            //Zutatenanzahl
+            let zutatenNumDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenNumDiv.classList.add("rezeptZutatenAnzahl");
+            zutatenNumDiv.innerHTML = localZut[i].anzahl.toString();
+            } 
+        }
 
         //Anleitung
         let anleitungDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));

@@ -4,14 +4,17 @@ import * as Mongo from "mongodb";
 
 
 interface Nutzer {
-    [type: string]: string | string[];
+  _id: string;
+  nutzername: string;
+  passwort: string;
 }
 
 interface Rezept {
-  _id: string;
+  [type: string]: string | string[];
+  /*_id: string;
   titel: string;
   anleitung: string;
-  autor: string;
+  autor: string;]*/
 }
 
 interface Zutat {
@@ -21,46 +24,55 @@ interface Zutat {
   anzahl: number;
 }
 
-//let orders: Mongo.Collection;
-let server: Http.Server = Http.createServer(); //Server erschaffen
+let rezepte: Mongo.Collection;
+
 
 let port: number | string | undefined = process.env.PORT; //Port von Heroku
-if (port == undefined) {
-    port = 8100; //Setzt den Port auf 8100, wenn er nichts findet
+if (port == undefined) 
+    port = 27; //Setzt den Port auf 8100, wenn er nichts findet
+
+let databaseUrl: string = "mongodb://localhost:27017";
+
+startServer(port);
+connectToDatabase(databaseUrl);
+
+function startServer(_port: number | string): void {
+let server: Http.Server = Http.createServer(); //Server erschaffen
+console.log("Starting on Port: " + _port);
+
+server.listen(_port);
+server.addListener("request", handleRequest); //EventListener für requests erschaffen
 }
 
-server.listen(port);
-console.log("Listening on Port: " + port);
+async function connectToDatabase(_url: string): Promise <void> {
+  let options: Mongo.MongoClientOptions = {useNewUrlParser: true, useUnifiedTopology: true};
+  let mongoClient: Mongo.MongoClient = new Mongo.MongoClient("mongodb+srv://testUser:1234@cluster.vrtif.mongodb.net/Rezeptesammlung?retryWrites=true&w=majority", options);
+  await mongoClient.connect();
+  rezepte = mongoClient.db("Rezeptesammlung").collection("Rezepte");
+  console.log("DB connection", rezepte != undefined);
+}
 
-server.addListener("request", handleRequest); //EventListener für requests erschaffen
-
-async function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): Promise <void> { 
+function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void { 
   console.log("I hear voices!"); //wenn die funktion handleRequest ausgeführt wird, gibt die Konsole "I hear voices!" aus.
   _response.setHeader("content-type", "text/html; charset=utf-8"); //Antwort ist vom typ Text
   _response.setHeader("Access-Control-Allow-Origin", "*"); //Alle können auf die Antwort zugreifen
-  let pathName: string = Url.parse(_request.url).pathname;
-
   
-  
-  let mongoClient: Mongo.MongoClient = new Mongo.MongoClient("mongodb://localhost:27017");
-  await mongoClient.connect();
+  if (_request.url) {
+    let url: Url.UrlWithParsedQuery = Url.parse(_request.url, true);
+    for (let key in url.query) {
+      _response.write(key + ":" + url.query[key] + "<br/>");
+    }
+    let jsonString: string = JSON.stringify(url.query);
+    _response.write(jsonString);
 
-  let myURL: Url.URL = new Url.URL(_request.url, "https://example.com");
-  let parameter: URLSearchParams = myURL.searchParams;
-  switch (pathName) {
-    case "/AlleRezepte":
-      let rezeptArray: Rezept[] = await mongoClient.db("Database").collection("Rezepte").find().toArray();
-      _response.write(JSON.stringify(rezeptArray));
+    storeRezept(url.query);
+    
   }
 
-
-  //let databaseUrl: string = "mongodb://localhost:27017";
-  
-      //storeNutzer(url.query)
-
+      
+  function storeRezept (_rezept: Rezept): void {
+    rezepte.insertOne(_rezept);
+  }
   _response.end(); //Antwort wird an den Client geschickt
-
-    //function storeNutzer(_nutzer: Nutzer): void {
-      //orders.insert(_nutzer);
     
   }

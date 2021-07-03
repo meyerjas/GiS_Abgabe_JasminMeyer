@@ -4,11 +4,9 @@ var Rezeptesammlung;
     async function RezepteZeigen() {
         let result = await fetch(Rezeptesammlung.serverUrl + "AlleRezepte");
         let rezepte = JSON.parse(await result.text());
+        let zutaten = JSON.parse(await result.text());
         console.log(rezepte);
-        let localStorageArray = JSON.parse(localStorage.getItem(Rezeptesammlung.favoritenLocalStorage));
-        //function Zutatenliste(amount: number, einheit: string, name: string) {
-        // amount = Rezept.anzahl;
-        //}
+        console.log(zutaten);
         //Erstellen der Rezeptdivs
         for (let i = 0; i < rezepte.length; i++) {
             let rezeptDiv = document.createElement("div");
@@ -19,10 +17,22 @@ var Rezeptesammlung;
             let titelDiv = rezeptDiv.appendChild(document.createElement("div"));
             titelDiv.classList.add("rezeptTitel");
             titelDiv.innerHTML = rezepte[i].titel;
-            //Zutatenliste
-            //let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-            //zutatenDiv.classList.add("rezeptZutat");
-            //zutatenDiv.innerHTML = rezepte[i].Zutat;
+            for (let k = 0; k < zutaten.length; k++) {
+                if (zutaten[k].referenzName == rezepte[i].titel) {
+                    //Zutatenname
+                    let zutatenNameDiv = rezeptDiv.appendChild(document.createElement("div"));
+                    zutatenNameDiv.classList.add("rezeptZutaten");
+                    zutatenNameDiv.innerHTML = zutaten[i].name;
+                    //Zutateneinheit
+                    let zutatenUnitDiv = rezeptDiv.appendChild(document.createElement("div"));
+                    zutatenUnitDiv.classList.add("rezeptZutaten");
+                    zutatenUnitDiv.innerHTML = zutaten[i].einheit;
+                    //Zutatenanzahl
+                    let zutatenNumDiv = rezeptDiv.appendChild(document.createElement("div"));
+                    zutatenNumDiv.classList.add("rezeptZutaten");
+                    zutatenNumDiv.innerHTML = zutaten[i].anzahl.toString();
+                }
+            }
             //Anleitung
             let anleitungDiv = rezeptDiv.appendChild(document.createElement("div"));
             anleitungDiv.classList.add("rezeptTitel");
@@ -46,18 +56,19 @@ var Rezeptesammlung;
             let index = parseInt(target.getAttribute("RezeptIndex"));
             let auswahl = rezepte[index];
             let favorisieren = JSON.parse(localStorage.getItem(Rezeptesammlung.favoritenLocalStorage));
+            let favorisierenZutaten = JSON.parse(localStorage.getItem(Rezeptesammlung.favoritenLocalStorage));
             console.log(favorisieren);
+            console.log(favorisierenZutaten);
             favorisieren.push(auswahl);
             localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, JSON.stringify(favorisieren));
         }
-    }
-    /*let favButton: HTMLCollectionOf<HTMLButtonElement> = document.getElementsByTagName("favoButton");
-    for (let j: number = 0; j < favButton.length; j++) {
-        favButton[j].addEventListener("click", addToFavs);
-
-        function addToFavs():void {
-            localStorage.setItem();
+        async function seiteLaden() {
+            if (!localStorage.getItem(Rezeptesammlung.favoritenLocalStorage)) {
+                localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, "[]");
+            }
+            RezepteZeigen();
         }
-    }*/
+        seiteLaden();
+    }
 })(Rezeptesammlung || (Rezeptesammlung = {}));
 //# sourceMappingURL=alleRezepte.js.map

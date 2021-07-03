@@ -59,3 +59,27 @@ h1 {
     color: white;
     text-shadow: 2px 1px black;
 }
+
+p {
+    color: white;
+}
+
+#rezeptContainer {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.rezeptDiv {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 10px;
+    justify-content: center;
+    /* align horizontal */
+    align-items: center;
+    /* align vertical */
+    border-radius: 24px 24px 24px 24px;
+    border: double;
+}
