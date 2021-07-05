@@ -1,28 +1,38 @@
+
 namespace Rezeptesammlung {
 
-    export interface Rezept {
+    export interface Rezepte {
         _id: string;
         titel: string;
         anleitung: string;
         autor: string;
+        zutaten: [];
+        favorisiert: [];
     }
 
-    export interface Zutat {
+   /* export interface Zutaten {
         _id: string;
-        referenzName: string;
         name: string;
         einheit: string;
         anzahl: number;
-      }
+    }*/
+
+    export interface Nutzer {
+        _id: string;
+        nutzername: string;
+        passwort: string;
+        status: string;
+    }
+
+
 
     async function RezepteZeigen(): Promise<void> {
         let result: Response = await fetch(serverUrl + "AlleRezepte");
-        let rezepte: Rezept[] = JSON.parse(await result.text());
-        let zutaten: Zutat[] = JSON.parse(await result.text()); 
+        let rezepte: Rezepte[] = JSON.parse(await result.text()); 
+        let nutzer: Nutzer[];
         console.log(rezepte);
-        console.log(zutaten);
 
-        
+
         //Erstellen der Rezeptdivs
         for (let i: number = 0; i < rezepte.length; i++) {
             let rezeptDiv: HTMLDivElement = document.createElement("div");
@@ -30,29 +40,19 @@ namespace Rezeptesammlung {
 
             //wähle den container und gib ihm ein Div-Kind
             document.querySelector("#rezeptContainer").appendChild(rezeptDiv);
-           
+
             //Rezeptname
             let titelDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
             titelDiv.classList.add("rezeptTitel");
             titelDiv.innerHTML = rezepte[i].titel;
 
-            for (let k: number = 0; k < zutaten.length; k++) {
-                if (zutaten[k].referenzName == rezepte[i].titel) {
-                //Zutatenname
-                let zutatenNameDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenNameDiv.classList.add("rezeptZutaten");
-                zutatenNameDiv.innerHTML = zutaten[i].name;
+            for (let k: number = 0; k < rezepte[i].zutaten.length; k++) {
 
-                //Zutateneinheit
-                let zutatenUnitDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenUnitDiv.classList.add("rezeptZutaten");
-                zutatenUnitDiv.innerHTML = zutaten[i].einheit;
+                //Zutaten
+                let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenDiv.classList.add("rezeptZutaten");
+                zutatenDiv.innerHTML = rezepte[i].zutaten[k];
 
-                //Zutatenanzahl
-                let zutatenNumDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenNumDiv.classList.add("rezeptZutaten");
-                zutatenNumDiv.innerHTML = zutaten[i].anzahl.toString();
-                } 
             }
 
             //Anleitung
@@ -74,33 +74,48 @@ namespace Rezeptesammlung {
 
             //Event zum Favorisieren
             favoButton?.addEventListener("click", addToFavs);
-            
-                
+
+
         }
 
-        function addToFavs (_event: Event): void {
+        function addToFavs(_event: Event): void {
             //Rezeptauswahl
             let target: HTMLElement = <HTMLElement>_event.target;
             let index: number = parseInt(target.getAttribute("RezeptIndex"));
-            let auswahl: Rezept = rezepte[index];
+            let auswahl: Rezepte = rezepte[index];
 
-            let favorisieren: Rezept[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
-            let favorisierenZutaten: Zutat[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
-            console.log(favorisieren);
-            console.log(favorisierenZutaten);
+            
+            //Abfrage, ob der nutzer eingeloggt ist
+            if (nutzer[index].status == "eingeloggt") {
+                for (let n: number = 0; n < nutzer.length; n++) {
+                //hinzufügen
+                let favorit: Rezepte[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
+                console.log(favorit);
+                }
 
-            favorisieren.push(auswahl);
-            localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorisieren));
-        }
-        async function seiteLaden(): Promise <void> {
-            if (!localStorage.getItem(favoritenLocalStorage)) {
-                localStorage.setItem(favoritenLocalStorage, "[]");
+
+
+
+                
+            } else {
+                alert("Loggen Sie sich ein, um Rezepte zu favorisieren.")
             }
             
-            RezepteZeigen();
-        }        
+    
 
-        seiteLaden();
+            favorit.push(auswahl);
+            localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorit));
+        }
+
     }
+    async function seiteLaden(): Promise<void> {
+        if (!localStorage.getItem(favoritenLocalStorage)) {
+            localStorage.setItem(favoritenLocalStorage, "[]");
+        }
+
+        RezepteZeigen();
+    }
+
+    seiteLaden();
 
 }

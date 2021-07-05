@@ -1,38 +1,30 @@
 namespace Rezeptesammlung {
 
-    let favorisierteRezepte: HTMLDivElement = document.querySelector(".fav");
-    let localRez: Rezept[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
-    let localZut: Zutat[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
 
-    //Rezepte reinladen
-    for (let i: number = 0; i < localRez.length; i++) {
+    async function RezepteZeigen(): Promise<void> {
+        let result: Response = await fetch(serverUrl + "favoriten");
+        let rezepte: Rezepte[] = JSON.parse(await result.text()); 
+        console.log(rezepte);
+
+        let favorisierteRezepte: HTMLDivElement = document.querySelector(".fav");
+        let localRez: Rezepte[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
+
+        //Rezepte reinladen
+        for (let i: number = 0; i < localRez.length; i++) {
         let rezeptDiv: HTMLDivElement = document.createElement("div");
         rezeptDiv.classList.add("rezeptDiv");
         favorisierteRezepte.appendChild(rezeptDiv);
 
-       
         //Rezepttitel
         let titelDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
         titelDiv.classList.add("rezeptTitel");
         titelDiv.innerHTML = localRez[i].titel;
 
-        for (let k: number = 0; k < localZut.length; k++) {
-            if (localZut[k].referenzName == localRez[i].titel) {
-            //Zutatenname
-            let zutatenNameDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-            zutatenNameDiv.classList.add("rezeptZutatenName");
-            zutatenNameDiv.innerHTML = localZut[i].name;
-
-            //Zutateneinheit
-            let zutatenUnitDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-            zutatenUnitDiv.classList.add("rezeptZutatenUnit");
-            zutatenUnitDiv.innerHTML = localZut[i].einheit;
-
-            //Zutatenanzahl
-            let zutatenNumDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-            zutatenNumDiv.classList.add("rezeptZutatenAnzahl");
-            zutatenNumDiv.innerHTML = localZut[i].anzahl.toString();
-            } 
+        //Zutaten; für jedes Rezept im local Storage geht es durch die Zutaten. 
+        for (let k: number = 0; k < localRez[i].zutaten.length; k++) {
+            let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenDiv.classList.add("rezeptZutaten");
+            zutatenDiv.innerHTML = localRez[i].zutaten[k];
         }
 
         //Anleitung
@@ -56,7 +48,7 @@ namespace Rezeptesammlung {
         deleteButton?.addEventListener("click", entferneRezept);
     }
 
-    function entferneRezept(_event: Event): void {
+        function entferneRezept(_event: Event): void {
         let target: HTMLElement = <HTMLElement>_event.target;
         let index: number = parseInt(target.getAttribute("RezeptIndex"));
 
@@ -64,13 +56,9 @@ namespace Rezeptesammlung {
 
         localStorage.setItem(favoritenLocalStorage, JSON.stringify(localRez));
         location.reload();
+
+        
     }
-
-
-
-
-
-
-
-
+}
+    RezepteZeigen();
 }
