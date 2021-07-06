@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Http = require("http");
 const Url = require("url");
 const Mongo = require("mongodb");
-let rezepte;
+//let rezepte: Mongo.Collection;
 let port = process.env.PORT; //Port von Heroku
 if (port == undefined)
-    port = 27; //Setzt den Port auf 8100, wenn er nichts findet
+    port = 8100; //Setzt den Port auf 8100, wenn er nichts findet
 let server = Http.createServer(); //Server erschaffen
 console.log("Starting on Port: " + port);
 server.listen(port);
@@ -29,13 +29,12 @@ async function handleRequest(_request, _response) {
             break;
         //wenn bei Url /favoriten dran...    
         case "/favoriten":
+            let favoritenArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
+            _response.write(JSON.stringify(favoritenArray));
             break;
         case "/meineRezepte":
             let meineRezepteArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
-            // console.log(meineRezepteArray);
             _response.write(JSON.stringify(meineRezepteArray));
-            break;
-        case "/LogIn":
             break;
         case "/Registrieren":
             let neuerNutzername = parameter.get("neuerNN");

@@ -32,12 +32,12 @@ interface favorisiert {
 
 }
 
-let rezepte: Mongo.Collection;
+//let rezepte: Mongo.Collection;
 
 
 let port: number | string | undefined = process.env.PORT; //Port von Heroku
 if (port == undefined)
-    port = 27; //Setzt den Port auf 8100, wenn er nichts findet
+    port = 8100; //Setzt den Port auf 8100, wenn er nichts findet
 
 let server: Http.Server = Http.createServer(); //Server erschaffen
 console.log("Starting on Port: " + port);
@@ -71,20 +71,14 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
 
         //wenn bei Url /favoriten dran...    
         case "/favoriten":
+            let favoritenArray: Rezepte[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
+            _response.write(JSON.stringify(favoritenArray));
 
-
-            
             break;
 
         case "/meineRezepte":
             let meineRezepteArray: Rezepte[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
-            // console.log(meineRezepteArray);
             _response.write(JSON.stringify(meineRezepteArray));
-
-            break;
-
-        case "/LogIn":
-
 
             break;
 

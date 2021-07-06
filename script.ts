@@ -1,6 +1,6 @@
 namespace Rezeptesammlung {
 
-    export const serverUrl: string = "https://gisjas.herukoapp.com/";
+    export const serverUrl: string = "https://gisjas.herokuapp.com/";
     export const favoritenLocalStorage: string = "favoritenStorage";
 
 }
