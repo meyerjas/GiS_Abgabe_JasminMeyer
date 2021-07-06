@@ -10,12 +10,12 @@ namespace Rezeptesammlung {
         favorisiert: [];
     }
 
-   /* export interface Zutaten {
-        _id: string;
-        name: string;
-        einheit: string;
-        anzahl: number;
-    }*/
+    /* export interface Zutaten {
+         _id: string;
+         name: string;
+         einheit: string;
+         anzahl: number;
+     }*/
 
     export interface Nutzer {
         _id: string;
@@ -28,8 +28,8 @@ namespace Rezeptesammlung {
 
     async function RezepteZeigen(): Promise<void> {
         let result: Response = await fetch(serverUrl + "AlleRezepte");
-        let rezepte: Rezepte[] = JSON.parse(await result.text()); 
-        let nutzer: Nutzer[];
+        let rezepte: Rezepte[] = JSON.parse(await result.text());
+       // let nutzer: Nutzer[];
         console.log(rezepte);
 
 
@@ -83,38 +83,31 @@ namespace Rezeptesammlung {
             let target: HTMLElement = <HTMLElement>_event.target;
             let index: number = parseInt(target.getAttribute("RezeptIndex"));
             let auswahl: Rezepte = rezepte[index];
+            //let favorisiert: string = document.querySelector("").getAttribute("");
 
-            
             //Abfrage, ob der nutzer eingeloggt ist
-            if (nutzer[index].status == "eingeloggt") {
-                for (let n: number = 0; n < nutzer.length; n++) {
-                //hinzufügen
+            if (localStorage.getItem("status") == "eingeloggt") {
+                //Favorit hinzufügen
                 let favorit: Rezepte[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
                 console.log(favorit);
-                }
-
-
-
-
+                favorit.push(auswahl);
+                localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorit));
                 
-            } else {
-                alert("Loggen Sie sich ein, um Rezepte zu favorisieren.")
-            }
-            
-    
+                //wie speicher ich den nutzer in dem array favorisiert? Über mehrere Sitzungen hinweg favorisiert dann.
 
-            favorit.push(auswahl);
-            localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorit));
-        }
+            } else {
+                alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");
+            }
+
+        }     
 
     }
     async function seiteLaden(): Promise<void> {
         if (!localStorage.getItem(favoritenLocalStorage)) {
             localStorage.setItem(favoritenLocalStorage, "[]");
-        }
-
+            }
         RezepteZeigen();
-    }
+        }
 
     seiteLaden();
 

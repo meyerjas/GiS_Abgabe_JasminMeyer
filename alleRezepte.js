@@ -4,7 +4,7 @@ var Rezeptesammlung;
     async function RezepteZeigen() {
         let result = await fetch(Rezeptesammlung.serverUrl + "AlleRezepte");
         let rezepte = JSON.parse(await result.text());
-        let nutzer;
+        // let nutzer: Nutzer[];
         console.log(rezepte);
         //Erstellen der Rezeptdivs
         for (let i = 0; i < rezepte.length; i++) {
@@ -44,19 +44,19 @@ var Rezeptesammlung;
             let target = _event.target;
             let index = parseInt(target.getAttribute("RezeptIndex"));
             let auswahl = rezepte[index];
+            //let favorisiert: string = document.querySelector("").getAttribute("");
             //Abfrage, ob der nutzer eingeloggt ist
-            if (nutzer[index].status == "eingeloggt") {
-                for (let n = 0; n < nutzer.length; n++) {
-                    //hinzufügen
-                    let favorit = JSON.parse(localStorage.getItem(Rezeptesammlung.favoritenLocalStorage));
-                    console.log(favorit);
-                }
+            if (localStorage.getItem("status") == "eingeloggt") {
+                //Favorit hinzufügen
+                let favorit = JSON.parse(localStorage.getItem(Rezeptesammlung.favoritenLocalStorage));
+                console.log(favorit);
+                favorit.push(auswahl);
+                localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, JSON.stringify(favorit));
+                //wie speicher ich den nutzer in dem array favorisiert? Über mehrere Sitzungen hinweg favorisiert dann.
             }
             else {
                 alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");
             }
-            favorit.push(auswahl);
-            localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, JSON.stringify(favorit));
         }
     }
     async function seiteLaden() {

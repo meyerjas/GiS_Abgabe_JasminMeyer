@@ -19,18 +19,17 @@
     <main>
         <div class="bgBox">
             <p>Willkommen zurück!</p>
-            <form action="https://gisjas.herokuapp.com" method="POST" id="einloggen">
-                <input type="text" name="nutzername" placeholder="Nutzername">
-                <input type="password" name="password" placeholder="Passwort"> <br><br>
+            <form method="POST" id="einloggen">
+                <input type="text" id="nutzername" placeholder="Nutzername">
+                <input type="string" id="password" placeholder="Passwort"> <br><br>
                 <button id="einlogButton">Einloggen</button>
             </form>
 
-            <p id="warnung"></p> <br><br>
 
             <p>Noch keinen Account angelegt? Registriere dich jetzt!</p> <br>
-            <form action="https://gisjas.herokuapp.com" method="POST" id="registrieren">
-                <input type="text" name="neuerNN" placeholder="Nutzername">
-                <input type="password" name="neuesPW" placeholder="Passwort"> <br><br>
+            <form method="POST" id="registrieren">
+                <input type="text" id="neuerNN" placeholder="Nutzername">
+                <input type="string" id="neuesPW" placeholder="Passwort"> <br><br>
                 <button id="registrierButton">Registrieren</button>
             </form>
 

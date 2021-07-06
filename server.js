@@ -22,28 +22,13 @@ async function handleRequest(_request, _response) {
     let parameter = myURL.searchParams;
     let path = Url.parse(_request.url).pathname;
     switch (path) {
-        //wenn bei der Url /alleRezepte angehängt wird, dann...
+        //wenn bei der Url /alleRezepte angehängt wird, dann finde alle Objekte in meiner Rezeptecollection, pack sie in array und geb sie mir aus.
         case "/alleRezepte":
-            //...finde alle Objekte in meiner Rezeptecollection und pack sie in nen Array
             let rezeptArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
-            //Gib mir mein Rezept auf der Seite aus.
             _response.write(JSON.stringify(rezeptArray));
             break;
         //wenn bei Url /favoriten dran...    
         case "/favoriten":
-            let parseRezepte = JSON.parse(parameter.get(""));
-            //Wer hat das Rezept favorisiert?
-            let werFav = parameter.get("favorisiert");
-            for (let i = 0; i < parseRezepte.length; i++) {
-                //ObjectID wird benötigt da es nicht nur ein String ist sondern ein Object https://stackoverflow.com/questions/8233014/how-do-i-search-for-an-object-by-its-objectid-in-the-mongo-console
-                let findQuery = {
-                    _id: new Mongo.ObjectID(parseRezepte[i]._id)
-                };
-                //https://stackoverflow.com/a/38883596  zum updaten des Werts
-                let updateQuery = { $set: { favorisiert: werFav., favorisiert: "" } };
-                //FindOneAndUpdate: Mongodb Dokumentation: https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/#examples (Erster Parameter sucht, zweiter Paramater updatet das gefundene)
-                await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate(findQuery, updateQuery);
-            }
             break;
         case "/meineRezepte":
             let meineRezepteArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
@@ -51,10 +36,15 @@ async function handleRequest(_request, _response) {
             _response.write(JSON.stringify(meineRezepteArray));
             break;
         case "/LogIn":
+            break;
+        case "/Registrieren":
+            let neuerNutzername = parameter.get("neuerNN");
+            let neuesPw = parameter.get("neuesPW");
+            await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ _id: new Mongo.ObjectID, nutzername: neuerNutzername, passwort: neuesPw, status: "eingeloggt" });
+            break;
     }
     _response.end(); //Antwort wird an den Client geschickt
 }
-function storeRezept(_rezept) {
-    rezepte.insertOne(_rezept);
-}
+//function storeRezept(_rezept: Rezept): void {
+//rezepte.insertOne(_rezept);
 //# sourceMappingURL=server.js.map

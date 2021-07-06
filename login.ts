@@ -22,9 +22,12 @@ namespace Rezeptesammlung {
         registrierButton?.addEventListener("click", registrieren);
 
 
-        let nutzername: string = document.querySelector("#einloggen").getAttribute("nutzername");
-        let passwort: string = document.querySelector("#einloggen").getAttribute("password");
+        let nutzername: string = document.querySelector("#einloggen").getAttribute("#nutzername");
+        let passwort: string = document.querySelector("#einloggen").getAttribute("#password");
+        let neuerName: string = document.querySelector("#registrieren").getAttribute("#neuerNN");
+        let neuesPW: string = document.querySelector("#registrieren").getAttribute("#neuesPW");
         
+
         
         function einloggen(_event: Event): void {
             for (let i: number = 0; i < nutzer.length; i++) {
@@ -32,21 +35,29 @@ namespace Rezeptesammlung {
                 if ((nutzername == nutzer[i].nutzername) && (passwort == nutzer[i].passwort)) {
                     nutzer[i].status = "eingeloggt";
                     console.log(nutzername + "ist jetzt eingeloggt.");
+                    localStorage.setItem("status", "eingeloggt");
+                    localStorage.setItem("nutzername", nutzername);
+                    location.href = "/alleRezepte.html";
                 } else {
                     nutzer[i].status = "ausgeloggt";
-                    console.log("Anmeldung fehlgeschlagen, Bitte versuchen Sie es erneut oder registrieren Sie sich.");
+                    alert("Anmeldung fehlgeschlagen, Bitte versuchen Sie es erneut oder registrieren Sie sich.");
                 }
             }
             
         }
 
-        function registrieren(_event: Event): void {
+        async function registrieren(_event: Event): Promise <void> {
             for (let i: number = 0; i < nutzer.length; i++) {
                 //Prüfen, ob Nutzer schon auf DB existiert. wenn ja, Konsolenausgabe dass Nutzer schon existiert.
                 if (nutzername == nutzer[i].nutzername) {
-                    console.log(nutzername + "existiert schon, bitte wählen Sie einen anderen Namen.");
+                    alert(nutzername + "existiert schon, bitte wählen Sie einen anderen Namen.");
                 } else {
-                    //neuen Nutzer anlegen
+                    let urlRegistrieren: string = serverUrl + "Registrieren";
+                    urlRegistrieren = urlRegistrieren + "?neuerNN" + neuerName + "?neuesPW" + neuesPW;
+                    await fetch(urlRegistrieren); 
+                    localStorage.setItem("status", "eingeloggt");
+                    localStorage.setItem("nutzername", nutzername);
+                    location.href = "/alleRezepte.html";
                 }
             }
         }
