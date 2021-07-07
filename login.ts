@@ -8,7 +8,7 @@ namespace Rezeptesammlung {
     }
 
 
-    async function LogInSetup(): Promise<void> {
+    function LogInSetup(): void {
        
         let einlogButton: HTMLFormElement = document.querySelector("#einlogButton");
         //Einlog-Event
@@ -20,18 +20,13 @@ namespace Rezeptesammlung {
 
     }
     async function einloggen(_event: Event): Promise <void> {
-        let nutzername: string = document.querySelector("#einloggen").getAttribute("#nutzername");
-        let passwort: string = document.querySelector("#einloggen").getAttribute("#password");
+        let nutzername: string = document.querySelector("#einloggen").getAttribute("nutzername");
+        let passwort: string = document.querySelector("#einloggen").getAttribute("password");
         
         let urlEinloggen: string = serverUrl + "einloggen";
-        urlEinloggen = urlEinloggen + "?nutzername" + nutzername + "?password" + passwort;
+        urlEinloggen = urlEinloggen + "?nutzername=" + nutzername + "?password=" + passwort;
         await fetch(urlEinloggen);
-
-        console.log(nutzername + "ist jetzt eingeloggt.");
-        localStorage.setItem("status", "eingeloggt");
-        localStorage.setItem("nutzername", nutzername);
-        //fetch("/alleRezepte.html");
-            
+        location.href = "/alleRezepte.html";
     }
 
     async function registrieren(_event: Event): Promise<void> {
@@ -40,7 +35,7 @@ namespace Rezeptesammlung {
         let neuesPW: string = document.querySelector("#registrieren").getAttribute("#neuesPW");
        
         let urlRegistrieren: string = serverUrl + "registrieren";
-        urlRegistrieren = urlRegistrieren + "?neuerNN" + neuerName + "?neuesPW" + neuesPW;
+        urlRegistrieren = urlRegistrieren + "?neuerNN" + neuerName + "&neuesPW" + neuesPW;
         await fetch(urlRegistrieren);
 
         localStorage.setItem("status", "eingeloggt");

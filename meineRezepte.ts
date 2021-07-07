@@ -11,9 +11,8 @@ namespace Rezeptesammlung {
         //Erstellen der Rezeptdivs
         for (let i: number = 0; i < rezepte.length; i++) {
             if (rezepte[i].autor == localStorage.getItem("nutzername")) {
+              
                 rezeptDiv.classList.add("rezeptDiv");
-
-                //wähle den container und gib ihm ein Div-Kind
                 document.querySelector("#meineRezepte").appendChild(rezeptDiv);
 
                 //Rezeptname
@@ -23,10 +22,17 @@ namespace Rezeptesammlung {
 
                 for (let k: number = 0; k < rezepte[i].zutaten.length; k++) {
 
-                    //Zutaten
-                    let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-                    zutatenDiv.classList.add("rezeptZutaten");
-                    zutatenDiv.innerHTML = rezepte[i].zutaten[k].name;
+                    let zutatenAnzahlDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                    zutatenAnzahlDiv.classList.add("ZutatenName");
+                    zutatenAnzahlDiv.innerHTML = JSON.stringify(rezepte[i].zutaten[k].anzahl);
+                    
+                    let zutatenEinheitDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                    zutatenEinheitDiv.classList.add("ZutatenName");
+                    zutatenEinheitDiv.innerHTML = rezepte[i].zutaten[k].einheit;
+                    
+                    let zutatenNameDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                    zutatenNameDiv.classList.add("ZutatenName");
+                    zutatenNameDiv.innerHTML = rezepte[i].zutaten[k].name;
 
                 }
 

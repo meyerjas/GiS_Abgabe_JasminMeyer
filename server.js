@@ -15,7 +15,6 @@ async function handleRequest(_request, _response) {
     console.log("I hear voices!"); //wenn die funktion handleRequest ausgeführt wird, gibt die Konsole "I hear voices!" aus.
     _response.setHeader("content-type", "text/html; charset=utf-8"); //Antwort ist vom typ Text
     _response.setHeader("Access-Control-Allow-Origin", "*"); //Alle können auf die Antwort zugreifen
-    // _response.Content.Headers.Allow.Add("Allow", "POST"); //damit push erlaubt wird?
     let options = { useNewUrlParser: true, useUnifiedTopology: true };
     let mongoClient = new Mongo.MongoClient("mongodb+srv://testUser:1234@cluster.vrtif.mongodb.net/Rezeptesammlung?retryWrites=true&w=majority", options);
     await mongoClient.connect();
@@ -41,8 +40,8 @@ async function handleRequest(_request, _response) {
             let neuerNutzername = parameter.get("neuerNN");
             let neuesPw = parameter.get("neuesPW");
             let nutzerInDb = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find().toArray();
-            let statusEingeloggt = "Eingeloggt";
-            let statusAusgeloggt = "Ausgeloggt";
+            let statusEingeloggt = "eingeloggt";
+            let statusAusgeloggt = "ausgeloggt";
             for (let i = 0; i < nutzerInDb.length; i++) {
                 if (nutzerInDb[i].nutzername == neuerNutzername) {
                     alert("Dieser Nutzername existiert bereits. Bitte wählen Sie einen anderen Namen oder loggen Sie sich mit einem bestehenden Konto ein.");
@@ -58,6 +57,9 @@ async function handleRequest(_request, _response) {
             for (let i = 0; i < nutzerInDb.length; i++) {
                 if (nutzerInDb[i].nutzername == nutzer && nutzerInDb[i].passwort == passwort) {
                     mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ nutzername: nutzer, passwort: passwort });
+                    nutzerInDb[i].status = statusEingeloggt;
+                    console.log("Eingeloggt als" + nutzer);
+                    location.href = "/alleRezepte";
                 }
                 else {
                     alert("Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");

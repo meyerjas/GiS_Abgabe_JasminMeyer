@@ -50,7 +50,6 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
     console.log("I hear voices!"); //wenn die funktion handleRequest ausgeführt wird, gibt die Konsole "I hear voices!" aus.
     _response.setHeader("content-type", "text/html; charset=utf-8"); //Antwort ist vom typ Text
     _response.setHeader("Access-Control-Allow-Origin", "*"); //Alle können auf die Antwort zugreifen
-   // _response.Content.Headers.Allow.Add("Allow", "POST"); //damit push erlaubt wird?
 
     let options: Mongo.MongoClientOptions = { useNewUrlParser: true, useUnifiedTopology: true };
     let mongoClient: Mongo.MongoClient = new Mongo.MongoClient("mongodb+srv://testUser:1234@cluster.vrtif.mongodb.net/Rezeptesammlung?retryWrites=true&w=majority", options);
@@ -87,8 +86,8 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             let neuerNutzername: string = parameter.get("neuerNN");
             let neuesPw: string = parameter.get("neuesPW");
             let nutzerInDb: Nutzer[] = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find().toArray();
-            let statusEingeloggt: string = "Eingeloggt";
-            let statusAusgeloggt: string = "Ausgeloggt";
+            let statusEingeloggt: string = "eingeloggt";
+            let statusAusgeloggt: string = "ausgeloggt";
 
             for (let i: number = 0; i < nutzerInDb.length; i++) {
                 if (nutzerInDb[i].nutzername == neuerNutzername) {
@@ -106,6 +105,9 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             for (let i: number = 0; i < nutzerInDb.length; i++) {
                 if (nutzerInDb[i].nutzername == nutzer && nutzerInDb[i].passwort == passwort) {
                     mongoClient.db("Rezeptesammlung").collection("Nutzer").find({nutzername: nutzer, passwort: passwort});
+                    nutzerInDb[i].status = statusEingeloggt;
+                    console.log("Eingeloggt als" + nutzer);
+                    location.href = "/alleRezepte";
                 } else {
                     alert("Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");
                 }
