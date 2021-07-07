@@ -30,7 +30,7 @@ namespace Rezeptesammlung {
         console.log(nutzername + "ist jetzt eingeloggt.");
         localStorage.setItem("status", "eingeloggt");
         localStorage.setItem("nutzername", nutzername);
-        location.href = "/alleRezepte.html";
+        //fetch("/alleRezepte.html");
             
     }
 
@@ -42,7 +42,7 @@ namespace Rezeptesammlung {
         let urlRegistrieren: string = serverUrl + "registrieren";
         urlRegistrieren = urlRegistrieren + "?neuerNN" + neuerName + "?neuesPW" + neuesPW;
         await fetch(urlRegistrieren);
-        
+
         localStorage.setItem("status", "eingeloggt");
         localStorage.setItem("nutzername", nutzername);
         location.href = "/alleRezepte.html";

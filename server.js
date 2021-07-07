@@ -15,6 +15,7 @@ async function handleRequest(_request, _response) {
     console.log("I hear voices!"); //wenn die funktion handleRequest ausgeführt wird, gibt die Konsole "I hear voices!" aus.
     _response.setHeader("content-type", "text/html; charset=utf-8"); //Antwort ist vom typ Text
     _response.setHeader("Access-Control-Allow-Origin", "*"); //Alle können auf die Antwort zugreifen
+    // _response.Content.Headers.Allow.Add("Allow", "POST"); //damit push erlaubt wird?
     let options = { useNewUrlParser: true, useUnifiedTopology: true };
     let mongoClient = new Mongo.MongoClient("mongodb+srv://testUser:1234@cluster.vrtif.mongodb.net/Rezeptesammlung?retryWrites=true&w=majority", options);
     await mongoClient.connect();
@@ -56,7 +57,7 @@ async function handleRequest(_request, _response) {
             let passwort = parameter.get("password");
             for (let i = 0; i < nutzerInDb.length; i++) {
                 if (nutzerInDb[i].nutzername == nutzer && nutzerInDb[i].passwort == passwort) {
-                    await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ nutzername: nutzer, passwort: passwort });
+                    mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ nutzername: nutzer, passwort: passwort });
                 }
                 else {
                     alert("Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");

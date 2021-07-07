@@ -18,7 +18,7 @@ var Rezeptesammlung;
         console.log(nutzername + "ist jetzt eingeloggt.");
         localStorage.setItem("status", "eingeloggt");
         localStorage.setItem("nutzername", nutzername);
-        location.href = "/alleRezepte.html";
+        //fetch("/alleRezepte.html");
     }
     async function registrieren(_event) {
         let nutzername = document.querySelector("#einloggen").getAttribute("#nutzername");
