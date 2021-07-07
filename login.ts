@@ -8,7 +8,9 @@ namespace Rezeptesammlung {
     }
 
 
-    function LogInSetup(): void {
+    async function LogInSetup(): Promise <void> {
+        let result: Response = await fetch(serverUrl + "logIn");
+        await result.text();
        
         let einlogButton: HTMLFormElement = document.querySelector("#einlogButton");
         //Einlog-Event

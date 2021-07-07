@@ -1,7 +1,9 @@
 "use strict";
 var Rezeptesammlung;
 (function (Rezeptesammlung) {
-    function LogInSetup() {
+    async function LogInSetup() {
+        let result = await fetch(Rezeptesammlung.serverUrl + "logIn");
+        await result.text();
         let einlogButton = document.querySelector("#einlogButton");
         //Einlog-Event
         einlogButton?.addEventListener("click", einloggen);
