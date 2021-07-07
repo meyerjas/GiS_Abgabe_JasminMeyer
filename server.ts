@@ -10,7 +10,7 @@ interface Nutzer {
     status: string;
 }
 
-interface Rezepte {
+interface Rezept {
     _id: string;
     titel: string;
     anleitung: string;
@@ -19,7 +19,7 @@ interface Rezepte {
     favorisiert: [];
 }
 
-interface Zutaten {
+interface Zutat {
     _id: string;
     name: string;
     anzahl: number;
@@ -64,28 +64,52 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
     switch (path) {
         //wenn bei der Url /alleRezepte angehängt wird, dann finde alle Objekte in meiner Rezeptecollection, pack sie in array und geb sie mir aus.
         case "/alleRezepte":
-            let rezeptArray: Rezepte[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
+            let rezeptArray: Rezept[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(rezeptArray));
 
             break;
 
         //wenn bei Url /favoriten dran...    
         case "/favoriten":
-            let favoritenArray: Rezepte[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
+            let favoritenArray: Rezept[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(favoritenArray));
 
             break;
 
         case "/meineRezepte":
-            let meineRezepteArray: Rezepte[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
+            let meineRezepteArray: Rezept[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(meineRezepteArray));
 
             break;
 
-        case "/Registrieren":
+        case "/registrieren":
             let neuerNutzername: string = parameter.get("neuerNN");
             let neuesPw: string = parameter.get("neuesPW");
-            await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({_id: new Mongo.ObjectID, nutzername: neuerNutzername, passwort: neuesPw, status: "eingeloggt"});
+            let nutzerInDb: Nutzer[] = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find().toArray();
+            let statusEingeloggt: string = "Eingeloggt";
+            let statusAusgeloggt: string = "Ausgeloggt";
+
+            for (let i: number = 0; i < nutzerInDb.length; i++) {
+                if (nutzerInDb[i].nutzername == neuerNutzername) {
+                    alert("Dieser Nutzername existiert bereits. Bitte wählen Sie einen anderen Namen oder loggen Sie sich mit einem bestehenden Konto ein.");
+                } else {
+                await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({_id: new Mongo.ObjectID(), nutzername: neuerNutzername, passwort: neuesPw, status: statusEingeloggt});
+                }
+            }
+            break;
+        
+        case "/einloggen":
+            let nutzer: string = parameter.get("nutzername");
+            let passwort: string = parameter.get("password");
+
+            for (let i: number = 0; i < nutzerInDb.length; i++) {
+                if (nutzerInDb[i].nutzername == nutzer && nutzerInDb[i].passwort == passwort) {
+                    await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({nutzername: nutzer, passwort: passwort});
+                } else {
+                    alert("Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");
+                }
+            }
+           
             break;
     
 
@@ -93,6 +117,4 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
 
     _response.end(); //Antwort wird an den Client geschickt
 }
-//function storeRezept(_rezept: Rezept): void {
-    //rezepte.insertOne(_rezept);
 

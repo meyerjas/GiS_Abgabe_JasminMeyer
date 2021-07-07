@@ -1,21 +1,21 @@
 
 namespace Rezeptesammlung {
 
-    export interface Rezepte {
+    export interface Rezept {
         _id: string;
         titel: string;
         anleitung: string;
         autor: string;
-        zutaten: [];
+        zutaten: Zutat[];
         favorisiert: [];
     }
 
-    /* export interface Zutaten {
+    export interface Zutat {
          _id: string;
          name: string;
          einheit: string;
          anzahl: number;
-     }*/
+     }
 
     export interface Nutzer {
         _id: string;
@@ -27,14 +27,17 @@ namespace Rezeptesammlung {
 
 
     async function RezepteZeigen(): Promise<void> {
-        let result: Response = await fetch(serverUrl + "AlleRezepte");
-        let rezepte: Rezepte[] = JSON.parse(await result.text());
+        let result: Response = await fetch(serverUrl + "alleRezepte");
+        let textAntwort: string = await result.text(); 
+        console.log(textAntwort);
+        let rezepte: Rezept[] = JSON.parse(textAntwort);
        // let nutzer: Nutzer[];
         console.log(rezepte);
 
 
         //Erstellen der Rezeptdivs
         for (let i: number = 0; i < rezepte.length; i++) {
+            console.log(rezepte[i]);
             let rezeptDiv: HTMLDivElement = document.createElement("div");
             rezeptDiv.classList.add("rezeptDiv");
 
@@ -47,12 +50,20 @@ namespace Rezeptesammlung {
             titelDiv.innerHTML = rezepte[i].titel;
 
             for (let k: number = 0; k < rezepte[i].zutaten.length; k++) {
-
+                console.log(rezepte[i].zutaten[k]);
                 //Zutaten
-                let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenDiv.classList.add("rezeptZutaten");
-                zutatenDiv.innerHTML = rezepte[i].zutaten[k];
-
+               
+                let zutatenAnzahlDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenAnzahlDiv.classList.add("ZutatenName");
+                zutatenAnzahlDiv.innerHTML = JSON.stringify(rezepte[i].zutaten[k].anzahl);
+                
+                let zutatenEinheitDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenEinheitDiv.classList.add("ZutatenName");
+                zutatenEinheitDiv.innerHTML = rezepte[i].zutaten[k].einheit;
+                
+                let zutatenNameDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenNameDiv.classList.add("ZutatenName");
+                zutatenNameDiv.innerHTML = rezepte[i].zutaten[k].name;
             }
 
             //Anleitung
@@ -82,13 +93,13 @@ namespace Rezeptesammlung {
             //Rezeptauswahl
             let target: HTMLElement = <HTMLElement>_event.target;
             let index: number = parseInt(target.getAttribute("RezeptIndex"));
-            let auswahl: Rezepte = rezepte[index];
+            let auswahl: Rezept = rezepte[index];
             //let favorisiert: string = document.querySelector("").getAttribute("");
 
             //Abfrage, ob der nutzer eingeloggt ist
             if (localStorage.getItem("status") == "eingeloggt") {
                 //Favorit hinzufügen
-                let favorit: Rezepte[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
+                let favorit: Rezept[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
                 console.log(favorit);
                 favorit.push(auswahl);
                 localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorit));
@@ -97,6 +108,7 @@ namespace Rezeptesammlung {
 
             } else {
                 alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");
+                location.href = "/logIn.html";
             }
 
         }     

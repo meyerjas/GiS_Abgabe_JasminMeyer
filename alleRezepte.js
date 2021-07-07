@@ -2,12 +2,15 @@
 var Rezeptesammlung;
 (function (Rezeptesammlung) {
     async function RezepteZeigen() {
-        let result = await fetch(Rezeptesammlung.serverUrl + "AlleRezepte");
-        let rezepte = JSON.parse(await result.text());
+        let result = await fetch(Rezeptesammlung.serverUrl + "alleRezepte");
+        let textAntwort = await result.text();
+        console.log(textAntwort);
+        let rezepte = JSON.parse(textAntwort);
         // let nutzer: Nutzer[];
         console.log(rezepte);
         //Erstellen der Rezeptdivs
         for (let i = 0; i < rezepte.length; i++) {
+            console.log(rezepte[i]);
             let rezeptDiv = document.createElement("div");
             rezeptDiv.classList.add("rezeptDiv");
             //wähle den container und gib ihm ein Div-Kind
@@ -17,10 +20,17 @@ var Rezeptesammlung;
             titelDiv.classList.add("rezeptTitel");
             titelDiv.innerHTML = rezepte[i].titel;
             for (let k = 0; k < rezepte[i].zutaten.length; k++) {
+                console.log(rezepte[i].zutaten[k]);
                 //Zutaten
-                let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenDiv.classList.add("rezeptZutaten");
-                zutatenDiv.innerHTML = rezepte[i].zutaten[k];
+                let zutatenAnzahlDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenAnzahlDiv.classList.add("ZutatenName");
+                zutatenAnzahlDiv.innerHTML = JSON.stringify(rezepte[i].zutaten[k].anzahl);
+                let zutatenEinheitDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenEinheitDiv.classList.add("ZutatenName");
+                zutatenEinheitDiv.innerHTML = rezepte[i].zutaten[k].einheit;
+                let zutatenNameDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenNameDiv.classList.add("ZutatenName");
+                zutatenNameDiv.innerHTML = rezepte[i].zutaten[k].name;
             }
             //Anleitung
             let anleitungDiv = rezeptDiv.appendChild(document.createElement("div"));
@@ -56,6 +66,7 @@ var Rezeptesammlung;
             }
             else {
                 alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");
+                location.href = "/logIn.html";
             }
         }
     }

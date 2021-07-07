@@ -18,9 +18,15 @@ var Rezeptesammlung;
             titelDiv.innerHTML = localRez[i].titel;
             //Zutaten; für jedes Rezept im local Storage geht es durch die Zutaten. 
             for (let k = 0; k < localRez[i].zutaten.length; k++) {
-                let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenDiv.classList.add("rezeptZutaten");
-                zutatenDiv.innerHTML = localRez[i].zutaten[k];
+                let zutatenAnzahlDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenAnzahlDiv.classList.add("rezeptZutaten");
+                zutatenAnzahlDiv.innerHTML = JSON.stringify(localRez[i].zutaten[k].anzahl);
+                let zutatenEinheitDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenEinheitDiv.classList.add("rezeptZutaten");
+                zutatenEinheitDiv.innerHTML = localRez[i].zutaten[k].einheit;
+                let zutatenNameDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenNameDiv.classList.add("rezeptZutaten");
+                zutatenNameDiv.innerHTML = localRez[i].zutaten[k].name;
             }
             //Anleitung
             let anleitungDiv = rezeptDiv.appendChild(document.createElement("div"));

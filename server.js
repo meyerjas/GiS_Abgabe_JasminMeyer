@@ -36,14 +36,34 @@ async function handleRequest(_request, _response) {
             let meineRezepteArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(meineRezepteArray));
             break;
-        case "/Registrieren":
+        case "/registrieren":
             let neuerNutzername = parameter.get("neuerNN");
             let neuesPw = parameter.get("neuesPW");
-            await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ _id: new Mongo.ObjectID, nutzername: neuerNutzername, passwort: neuesPw, status: "eingeloggt" });
+            let nutzerInDb = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find().toArray();
+            let statusEingeloggt = "Eingeloggt";
+            let statusAusgeloggt = "Ausgeloggt";
+            for (let i = 0; i < nutzerInDb.length; i++) {
+                if (nutzerInDb[i].nutzername == neuerNutzername) {
+                    alert("Dieser Nutzername existiert bereits. Bitte wählen Sie einen anderen Namen oder loggen Sie sich mit einem bestehenden Konto ein.");
+                }
+                else {
+                    await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ _id: new Mongo.ObjectID(), nutzername: neuerNutzername, passwort: neuesPw, status: statusEingeloggt });
+                }
+            }
+            break;
+        case "/einloggen":
+            let nutzer = parameter.get("nutzername");
+            let passwort = parameter.get("password");
+            for (let i = 0; i < nutzerInDb.length; i++) {
+                if (nutzerInDb[i].nutzername == nutzer && nutzerInDb[i].passwort == passwort) {
+                    await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ nutzername: nutzer, passwort: passwort });
+                }
+                else {
+                    alert("Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");
+                }
+            }
             break;
     }
     _response.end(); //Antwort wird an den Client geschickt
 }
-//function storeRezept(_rezept: Rezept): void {
-//rezepte.insertOne(_rezept);
 //# sourceMappingURL=server.js.map

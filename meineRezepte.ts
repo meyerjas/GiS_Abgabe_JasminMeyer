@@ -2,7 +2,7 @@ namespace Rezeptesammlung {
 
     async function meineRezepteZeigen(): Promise<void> {
         let result: Response = await fetch(serverUrl + "meineRezepte");
-        let rezepte: Rezepte[] = JSON.parse(await result.text());
+        let rezepte: Rezept[] = JSON.parse(await result.text());
         let rezeptDiv: HTMLDivElement = document.createElement("div");
         console.log(rezepte);
 
@@ -26,7 +26,7 @@ namespace Rezeptesammlung {
                     //Zutaten
                     let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
                     zutatenDiv.classList.add("rezeptZutaten");
-                    zutatenDiv.innerHTML = rezepte[i].zutaten[k];
+                    zutatenDiv.innerHTML = rezepte[i].zutaten[k].name;
 
                 }
 

@@ -3,11 +3,11 @@ namespace Rezeptesammlung {
 
     async function RezepteZeigen(): Promise<void> {
         let result: Response = await fetch(serverUrl + "favoriten");
-        let rezepte: Rezepte[] = JSON.parse(await result.text()); 
+        let rezepte: Rezept[] = JSON.parse(await result.text()); 
         console.log(rezepte);
 
         let favorisierteRezepte: HTMLDivElement = document.querySelector(".fav");
-        let localRez: Rezepte[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
+        let localRez: Rezept[] = JSON.parse(localStorage.getItem(favoritenLocalStorage));
 
         //Rezepte reinladen
         for (let i: number = 0; i < localRez.length; i++) {
@@ -22,9 +22,18 @@ namespace Rezeptesammlung {
 
         //Zutaten; für jedes Rezept im local Storage geht es durch die Zutaten. 
         for (let k: number = 0; k < localRez[i].zutaten.length; k++) {
-            let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
-            zutatenDiv.classList.add("rezeptZutaten");
-            zutatenDiv.innerHTML = localRez[i].zutaten[k];
+
+            let zutatenAnzahlDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenAnzahlDiv.classList.add("rezeptZutaten");
+            zutatenAnzahlDiv.innerHTML = JSON.stringify(localRez[i].zutaten[k].anzahl);
+
+            let zutatenEinheitDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenEinheitDiv.classList.add("rezeptZutaten");
+            zutatenEinheitDiv.innerHTML = localRez[i].zutaten[k].einheit;
+
+            let zutatenNameDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
+            zutatenNameDiv.classList.add("rezeptZutaten");
+            zutatenNameDiv.innerHTML = localRez[i].zutaten[k].name;
         }
 
         //Anleitung
