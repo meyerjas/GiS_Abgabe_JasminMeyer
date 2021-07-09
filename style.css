@@ -1,5 +1,6 @@
 body {
     text-align: center;
+    justify-content: center;
     background-image: url("pictures/light-live-background-css.jpg");
 }
 
@@ -17,6 +18,21 @@ header {
     margin: 10px;
 }
 
+#navbar {
+    position: fixed;
+    top: 20px;
+    right: 670px;
+    background: grey;
+    height: 120px;
+    width: 130px;
+    padding: 5px;
+    border-color: black;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 100%;
+    font-size: medium;
+}
+
 .bgBox {
     background-image: url("pictures/HG.png");
     width: 400px;
@@ -29,24 +45,11 @@ header {
     display: inline-block;
 }
 
-#navbar {
-    background: grey;
-    height: 20px;
-    width: 400px;
-    padding: 10px;
-    margin: 10px;
-    border: darkblue;
-    position: fixed;
-    left: 545px;
-    top: 0px;
-    border-radius: 20px;
-    font-size: medium;
-}
-
 a {
-    color: wheat;
+    color: white;
     text-shadow: 1px 1px black;
     opacity: 60%;
+    line-height: 1.7;
 }
 
 a:hover {
@@ -62,6 +65,10 @@ h1 {
 
 p {
     color: white;
+}
+
+hr {
+    width: 180px;
 }
 
 #rezeptContainer {
@@ -83,4 +90,44 @@ p {
     align-items: center;
     border-radius: 24px;
     border: double;
+}
+
+.rezeptTitel {
+    font-size: large;
+    text-shadow: 1px px black;
+}
+
+.rezeptAnleitung {
+    font-size: medium;
+}
+
+.zutAnz {
+    width: 20px;
+}
+
+.zutEin {
+    width: 40px;
+}
+
+#neuesRezept {
+    background-image: url(/pictures/HG.png);
+    color: white;
+    font-size: small;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 10px;
+    align-items: center;
+    border-radius: 24px;
+    border: double;
+    justify-content: center;
+}
+
+button {
+    border-radius: 20px;
+}
+
+button:active {
+    background-color: lightgray;
 }

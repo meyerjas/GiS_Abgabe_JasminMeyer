@@ -4,42 +4,35 @@ var Rezeptesammlung;
     async function RezepteZeigen() {
         let result = await fetch(Rezeptesammlung.serverUrl + "alleRezepte");
         let textAntwort = await result.text();
-        console.log(textAntwort);
         let rezepte = JSON.parse(textAntwort);
-        // let nutzer: Nutzer[];
-        console.log(rezepte);
         //Erstellen der Rezeptdivs
         for (let i = 0; i < rezepte.length; i++) {
-            console.log(rezepte[i]);
             let rezeptDiv = document.createElement("div");
             rezeptDiv.classList.add("rezeptDiv");
             //wähle den container und gib ihm ein Div-Kind
             document.querySelector("#rezeptContainer").appendChild(rezeptDiv);
-            //Rezeptname
+            //Rezepttitel
             let titelDiv = rezeptDiv.appendChild(document.createElement("div"));
             titelDiv.classList.add("rezeptTitel");
             titelDiv.innerHTML = rezepte[i].titel;
+            rezeptDiv.appendChild(document.createElement("hr"));
             for (let k = 0; k < rezepte[i].zutaten.length; k++) {
-                console.log(rezepte[i].zutaten[k]);
                 //Zutaten
-                let zutatenAnzahlDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenAnzahlDiv.classList.add("ZutatenName");
-                zutatenAnzahlDiv.innerHTML = JSON.stringify(rezepte[i].zutaten[k].anzahl);
-                let zutatenEinheitDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenEinheitDiv.classList.add("ZutatenName");
-                zutatenEinheitDiv.innerHTML = rezepte[i].zutaten[k].einheit;
-                let zutatenNameDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenNameDiv.classList.add("ZutatenName");
-                zutatenNameDiv.innerHTML = rezepte[i].zutaten[k].name;
+                let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenDiv.classList.add("rezeptZutaten");
+                zutatenDiv.innerHTML = (rezepte[i].zutaten[k].anzahl) + " " + rezepte[i].zutaten[k].einheit + " " + rezepte[i].zutaten[k].name;
             }
+            rezeptDiv.appendChild(document.createElement("hr"));
             //Anleitung
             let anleitungDiv = rezeptDiv.appendChild(document.createElement("div"));
-            anleitungDiv.classList.add("rezeptTitel");
+            anleitungDiv.classList.add("rezeptAnleitung");
             anleitungDiv.innerHTML = rezepte[i].anleitung;
+            rezeptDiv.appendChild(document.createElement("hr"));
             //Autor
             let autorDiv = rezeptDiv.appendChild(document.createElement("div"));
-            autorDiv.classList.add("rezeptTitel");
-            autorDiv.innerHTML = rezepte[i].autor;
+            autorDiv.classList.add("rezeptAutor");
+            autorDiv.innerHTML = "Autor: " + rezepte[i].autor;
+            rezeptDiv.appendChild(document.createElement("br"));
             //FavoButton
             let favoButton = rezeptDiv.appendChild(document.createElement("button"));
             favoButton.classList.add("favoButton");
@@ -49,12 +42,11 @@ var Rezeptesammlung;
             //Event zum Favorisieren
             favoButton?.addEventListener("click", addToFavs);
         }
-        function addToFavs(_event) {
+        async function addToFavs(_event) {
             //Rezeptauswahl
             let target = _event.target;
             let index = parseInt(target.getAttribute("RezeptIndex"));
             let auswahl = rezepte[index];
-            //let favorisiert: string = document.querySelector("").getAttribute("");
             //Abfrage, ob der nutzer eingeloggt ist
             if (localStorage.getItem("status") == "eingeloggt") {
                 //Favorit hinzufügen
@@ -62,7 +54,17 @@ var Rezeptesammlung;
                 console.log(favorit);
                 favorit.push(auswahl);
                 localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, JSON.stringify(favorit));
-                //wie speicher ich den nutzer in dem array favorisiert? Über mehrere Sitzungen hinweg favorisiert dann.
+                let favId = auswahl._id;
+                let nutzer = localStorage.getItem("nutzername");
+                let urlFavorisieren = Rezeptesammlung.serverUrl + "alleRezepte/favorisieren";
+                urlFavorisieren = urlFavorisieren + "?neuerFav=" + favId + "&nutzer" + nutzer;
+                let response = await fetch(urlFavorisieren);
+                if (response.status == 200) {
+                    alert("Das Rezept wurde zu den Favoriten hinzugefügt.");
+                }
+                else {
+                    alert("Das Rezept befindet sich bereits in ihrer Favoriten-Sammlung.");
+                }
             }
             else {
                 alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");

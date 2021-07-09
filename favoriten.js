@@ -16,26 +16,24 @@ var Rezeptesammlung;
             let titelDiv = rezeptDiv.appendChild(document.createElement("div"));
             titelDiv.classList.add("rezeptTitel");
             titelDiv.innerHTML = localRez[i].titel;
+            rezeptDiv.appendChild(document.createElement("hr"));
             //Zutaten; für jedes Rezept im local Storage geht es durch die Zutaten. 
             for (let k = 0; k < localRez[i].zutaten.length; k++) {
-                let zutatenAnzahlDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenAnzahlDiv.classList.add("rezeptZutaten");
-                zutatenAnzahlDiv.innerHTML = JSON.stringify(localRez[i].zutaten[k].anzahl);
-                let zutatenEinheitDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenEinheitDiv.classList.add("rezeptZutaten");
-                zutatenEinheitDiv.innerHTML = localRez[i].zutaten[k].einheit;
-                let zutatenNameDiv = rezeptDiv.appendChild(document.createElement("div"));
-                zutatenNameDiv.classList.add("rezeptZutaten");
-                zutatenNameDiv.innerHTML = localRez[i].zutaten[k].name;
+                let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
+                zutatenDiv.classList.add("rezeptZutaten");
+                zutatenDiv.innerHTML = (localRez[i].zutaten[k].anzahl) + " " + localRez[i].zutaten[k].einheit + " " + localRez[i].zutaten[k].name;
             }
+            rezeptDiv.appendChild(document.createElement("hr"));
             //Anleitung
             let anleitungDiv = rezeptDiv.appendChild(document.createElement("div"));
-            anleitungDiv.classList.add("rezeptTitel");
+            anleitungDiv.classList.add("rezeptAnleitung");
             anleitungDiv.innerHTML = localRez[i].anleitung;
+            rezeptDiv.appendChild(document.createElement("hr"));
             //Autor
             let autorDiv = rezeptDiv.appendChild(document.createElement("div"));
-            autorDiv.classList.add("rezeptTitel");
+            autorDiv.classList.add("rezeptAutor");
             autorDiv.innerHTML = localRez[i].autor;
+            rezeptDiv.appendChild(document.createElement("br"));
             //Button zum entfernen von Favs
             let deleteButton = rezeptDiv.appendChild(document.createElement("button"));
             deleteButton.classList.add("deleteButton");
@@ -43,9 +41,9 @@ var Rezeptesammlung;
             deleteButton.innerHTML = "Entfernen";
             deleteButton.setAttribute("RezeptIndex", i.toString());
             //Entfern-Event
-            deleteButton?.addEventListener("click", entferneRezept);
+            deleteButton?.addEventListener("click", entferneFavorit);
         }
-        function entferneRezept(_event) {
+        function entferneFavorit(_event) {
             let target = _event.target;
             let index = parseInt(target.getAttribute("RezeptIndex"));
             localRez.splice(index, 1);

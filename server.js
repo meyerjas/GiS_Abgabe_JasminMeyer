@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Http = require("http");
 const Url = require("url");
 const Mongo = require("mongodb");
-//let rezepte: Mongo.Collection;
 let port = process.env.PORT; //Port von Heroku
 if (port == undefined)
     port = 8100; //Setzt den Port auf 8100, wenn er nichts findet
@@ -27,6 +26,20 @@ async function handleRequest(_request, _response) {
             let rezeptArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(rezeptArray));
             break;
+        case "/alleRezepte/favorisieren":
+            let favoritenId = parameter.get("neuerFav");
+            let nutzerAngemeldet = parameter.get("nutzer");
+            let findQuery = { "nutzername": nutzerAngemeldet };
+            let upateQuery = { $set: { _favoID: favoritenId } };
+            let favStatus = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": nutzerAngemeldet, "_favoID": favoritenId }).hasNext();
+            if (favStatus) {
+                _response.statusCode = 409; //ist schon vorhanden 
+            }
+            else {
+                await mongoClient.db("Rezeptesammlung").collection("Nutzer").findOneAndUpdate(findQuery, upateQuery);
+                _response.statusCode = 200;
+            }
+            break;
         //wenn bei Url /favoriten dran...    
         case "/favoriten":
             let favoritenArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
@@ -36,34 +49,41 @@ async function handleRequest(_request, _response) {
             let meineRezepteArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(meineRezepteArray));
             break;
-        case "/registrieren":
-            let neuerNutzername = parameter.get("neuerNN");
-            let neuesPw = parameter.get("neuesPW");
-            let nutzerInDb = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find().toArray();
-            let statusEingeloggt = "eingeloggt";
-            let statusAusgeloggt = "ausgeloggt";
-            for (let i = 0; i < nutzerInDb.length; i++) {
-                if (nutzerInDb[i].nutzername == neuerNutzername) {
-                    alert("Dieser Nutzername existiert bereits. Bitte wählen Sie einen anderen Namen oder loggen Sie sich mit einem bestehenden Konto ein.");
-                }
-                else {
-                    await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ _id: new Mongo.ObjectID(), nutzername: neuerNutzername, passwort: neuesPw, status: statusEingeloggt });
-                }
-            }
+        case "/meineRezepte/neuesRezept":
+            let titel = parameter.get("titel");
+            let anleitung = parameter.get("anleitung");
+            let zutaten = parameter.get("zutaten");
+            let autor = parameter.get("autor");
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({ "titel": titel, "anleitung": anleitung, "autor": autor, "zutaten": zutaten });
             break;
-        case "/einloggen":
+        case "/logIn/einloggen":
+            console.log("Wir sind am einloggen.");
             let nutzer = parameter.get("nutzername");
             let passwort = parameter.get("password");
-            for (let i = 0; i < nutzerInDb.length; i++) {
-                if (nutzerInDb[i].nutzername == nutzer && nutzerInDb[i].passwort == passwort) {
-                    mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ nutzername: nutzer, passwort: passwort });
-                    nutzerInDb[i].status = statusEingeloggt;
-                    console.log("Eingeloggt als" + nutzer);
-                    location.href = "/alleRezepte";
-                }
-                else {
-                    alert("Es gab einen Fehler bei der Anmeldung. Bitte versuchen Sie es erneut.");
-                }
+            //vergleiche eingegebene Werte mit Werten in der DB und finde Übereinstimmung. Hör auf, wenn gefunden (hasNext(): https://examples.javacodegeeks.com/software-development/mongodb/mongodb-hasnext-and-next-example/)
+            let nutzerVergleich = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": nutzer, "passwort": passwort }).hasNext();
+            if (nutzerVergleich) {
+                console.log("Eingeloggt als" + nutzer);
+                // bei success: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_success
+                _response.statusCode = 200;
+            }
+            else {
+                //bei misserfolg: link s.o. (https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_success)
+                _response.statusCode = 401;
+            }
+            break;
+        case "/logIn/registrieren":
+            console.log("wir sind am Reg");
+            let neuerNutzername = parameter.get("neuerNN");
+            let neuesPw = parameter.get("neuesPW");
+            let setStatusEingeloggt = "eingeloggt";
+            let nutzerVergleichReg = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": neuerNutzername }).hasNext();
+            if (nutzerVergleichReg) {
+                _response.statusCode = 401;
+            }
+            else {
+                await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ "nutzername": neuerNutzername, "passwort": neuesPw, "status": setStatusEingeloggt });
+                _response.statusCode = 200;
             }
             break;
     }
