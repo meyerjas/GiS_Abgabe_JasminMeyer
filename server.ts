@@ -58,7 +58,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             break;
 
         case "/meineRezepte/delete":
-            console.log("es is heiß hier ersma löschen alla");
+            console.log("beim löschen angekommen");
             let idParam: string = parameter.get("id");
 
             //https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#examples löschen von docs
@@ -82,7 +82,6 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             let anleitung: string = parameter.get("anleitung");
             let parseZutaten: string[] = JSON.parse(parameter.get("zutaten"));
             let autor: string = parameter.get("autor");
-            console.log(parseZutaten);
 
             await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({ "titel": titel, "anleitung": anleitung, "autor": autor });
 

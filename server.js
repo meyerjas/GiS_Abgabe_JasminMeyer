@@ -35,7 +35,7 @@ async function handleRequest(_request, _response) {
             _response.write(JSON.stringify(meineRezepteArray));
             break;
         case "/meineRezepte/delete":
-            console.log("es is heiß hier ersma löschen alla");
+            console.log("beim löschen angekommen");
             let idParam = parameter.get("id");
             //https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#examples löschen von docs
             await mongoClient.db("Rezeptesammlung").collection("Rezepte").deleteOne({ "_id": new Mongo.ObjectId(idParam) });
@@ -53,7 +53,6 @@ async function handleRequest(_request, _response) {
             let anleitung = parameter.get("anleitung");
             let parseZutaten = JSON.parse(parameter.get("zutaten"));
             let autor = parameter.get("autor");
-            console.log(parseZutaten);
             await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({ "titel": titel, "anleitung": anleitung, "autor": autor });
             for (let k = 0; k < parseZutaten.length; k++) {
                 if (parseZutaten[k] != "" || undefined) {
