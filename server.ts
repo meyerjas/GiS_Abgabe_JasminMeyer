@@ -35,7 +35,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
     let parameter: URLSearchParams = myURL.searchParams;
     let path: string = Url.parse(_request.url).pathname;
 
-    
+
     switch (path) {
         //wenn bei der Url /alleRezepte angehängt wird, dann finde alle Objekte in meiner Rezeptecollection, pack sie in array und geb sie mir aus.
         case "/alleRezepte":
@@ -44,22 +44,6 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
 
             break;
 
-        case "/alleRezepte/favorisieren":
-            let favoritenId: string = parameter.get("neuerFav");
-            let nutzerAngemeldet: string = parameter.get ("nutzer");
-            let findQuery: Object = {"nutzername": nutzerAngemeldet};
-            let upateQuery: Object = {$set: { favoriten: {favoID: favoritenId}}};
-            let favStatus: boolean = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({"nutzername": nutzerAngemeldet, "_favoID": favoritenId}).hasNext();
-            
-            if (favStatus) {
-                _response.statusCode = 409; //ist schon vorhanden 
-            } else {
-                await mongoClient.db("Rezeptesammlung").collection("Nutzer").findOneAndUpdate(findQuery, upateQuery);
-                _response.statusCode = 200;
-            }    
-        
-            break;
-           
         case "/favoriten":
             let favoritenArray: Rezept[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(favoritenArray));
@@ -78,26 +62,8 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             let idParam: string = parameter.get("id");
 
             //https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#examples löschen von docs
-            await mongoClient.db("Rezeptesammlung").collection("Rezepte").deleteOne({"_id": new Mongo.ObjectId(idParam)});
-            
-            break;
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").deleteOne({ "_id": new Mongo.ObjectId(idParam) });
 
-        case "/meineRezepte/neuesRezept":
-            let titel: string = parameter.get("titel");
-            let anleitung: string = parameter.get("anleitung");
-            let parseZutaten: string[] = JSON.parse(parameter.get("zutaten"));
-            let autor: string = parameter.get("autor");
-            console.log(parseZutaten);
-            
-            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({"titel": titel, "anleitung": anleitung, "autor": autor});
-            
-            for (let k: number = 0; k < parseZutaten.length; k++) {
-                if (parseZutaten[k] != "" || undefined) {
-                    console.log(parseZutaten[k]);
-                    //https://www.tabnine.com/code/javascript/functions/mongodb/Collection/findOneAndUpdate
-                    await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({titel: titel}, {$set: {"zutaten": parseZutaten}});  
-                } 
-            }
             break;
 
         case "/meineRezepte/edit":
@@ -106,9 +72,27 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             let anleitungChange: string = parameter.get("anleitungChange");
             let zutatenChange: string[] = JSON.parse(parameter.get("zutatenChange"));
             let idPm: string = parameter.get("id");
-            
-            await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({"_id": new Mongo.ObjectId(idPm)}, {$set: {"zutaten": zutatenChange, "titel": titelChange, "anleitung": anleitungChange}});  
 
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ "_id": new Mongo.ObjectId(idPm) }, { $set: { "zutaten": zutatenChange, "titel": titelChange, "anleitung": anleitungChange } });
+
+            break;
+
+        case "/meineRezepte/neuesRezept":
+            let titel: string = parameter.get("titel");
+            let anleitung: string = parameter.get("anleitung");
+            let parseZutaten: string[] = JSON.parse(parameter.get("zutaten"));
+            let autor: string = parameter.get("autor");
+            console.log(parseZutaten);
+
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({ "titel": titel, "anleitung": anleitung, "autor": autor });
+
+            for (let k: number = 0; k < parseZutaten.length; k++) {
+                if (parseZutaten[k] != "" || undefined) {
+                    console.log(parseZutaten[k]);
+                    //https://www.tabnine.com/code/javascript/functions/mongodb/Collection/findOneAndUpdate
+                    await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ titel: titel }, { $set: { "zutaten": parseZutaten } });
+                }
+            }
             break;
 
         case "/logIn/einloggen":
@@ -124,7 +108,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
                 console.log("Eingeloggt als" + nutzer);
                 // bei success: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_success
                 _response.statusCode = 200;
-                
+
             } else {
                 //bei misserfolg: link s.o. (https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_success)
                 _response.statusCode = 401;
@@ -137,18 +121,18 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             let neuerNutzername: string = parameter.get("neuerNN");
             let neuesPw: string = parameter.get("neuesPW");
             let setStatusEingeloggt: string = "eingeloggt";
-           
-            let nutzerVergleichReg: boolean = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({"nutzername": neuerNutzername}).hasNext();
+
+            let nutzerVergleichReg: boolean = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": neuerNutzername }).hasNext();
 
             if (nutzerVergleichReg) {
 
                 _response.statusCode = 401;
 
-                } else {
-                await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({"nutzername": neuerNutzername, "passwort": neuesPw, "status": setStatusEingeloggt});
+            } else {
+                await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ "nutzername": neuerNutzername, "passwort": neuesPw, "status": setStatusEingeloggt });
                 _response.statusCode = 200;
-                }
-            
+            }
+
             break;
 
     }

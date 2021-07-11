@@ -61,8 +61,8 @@ namespace Rezeptesammlung {
                 editButton.setAttribute("RezeptIndex", i.toString());
 
                 
-                deleteButton?.addEventListener("click", löscheRezept); //Entfern-Event
-                editButton?.addEventListener("click", editRezept); //Bearbeitungs-Event
+                deleteButton?.addEventListener("click", löscheRezept); 
+                editButton?.addEventListener("click", editRezept); 
             }
         }
 
@@ -81,7 +81,6 @@ namespace Rezeptesammlung {
             location.reload(); //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
         }
 
-        //Bearbeitungs-Event
         function editRezept(_event: Event): void {
             console.log("editButton geklickt.");
             let target: HTMLElement = <HTMLElement>_event.target;
@@ -94,16 +93,16 @@ namespace Rezeptesammlung {
             let ogZutaten: NodeListOf<HTMLElement> = rezeptDivMitId.querySelectorAll(".rezeptZutaten");
             let ogAnleitung: HTMLElement = rezeptDivMitId.querySelector(".rezeptAnleitung");
 
+            //Buttontext ändern zu "speichern"
             let editButton: HTMLButtonElement = document.querySelector(".editButton");
             editButton.innerHTML = "Speichern";
-
             editButton?.addEventListener("click", speichern);
 
             //https://codepen.io/JoannaEl/pen/ZjaBvr um die Felder bearbeiten zu können.
             ogTitel.contentEditable = "true";
             ogAnleitung.contentEditable = "true";
 
-            ogZutaten.forEach(function(zutatfeld: HTMLElement) {
+            ogZutaten.forEach(function(zutatfeld: HTMLElement): void {
                zutatfeld.contentEditable = "true";
               });
             
@@ -114,7 +113,7 @@ namespace Rezeptesammlung {
     
                 let ogZutatenArray: string[] = [];
 
-                ogZutaten.forEach(function(zutatfeld: HTMLElement) {
+                ogZutaten.forEach(function(zutatfeld: HTMLElement): void {
                     ogZutatenArray.push(zutatfeld.innerHTML);
                    });
 

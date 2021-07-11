@@ -42,7 +42,7 @@ var Rezeptesammlung;
             //Event zum Favorisieren
             favoButton?.addEventListener("click", addToFavs);
         }
-        async function addToFavs(_event) {
+        function addToFavs(_event) {
             //Rezeptauswahl
             let target = _event.target;
             let index = parseInt(target.getAttribute("RezeptIndex"));
@@ -54,17 +54,7 @@ var Rezeptesammlung;
                 console.log(favorit);
                 favorit.push(auswahl);
                 localStorage.setItem(Rezeptesammlung.favoritenLocalStorage, JSON.stringify(favorit));
-                let favId = auswahl._id;
-                let nutzer = localStorage.getItem("nutzername");
-                let urlFavorisieren = Rezeptesammlung.serverUrl + "alleRezepte/favorisieren";
-                urlFavorisieren = urlFavorisieren + "?neuerFav=" + favId + "&nutzer" + nutzer;
-                let response = await fetch(urlFavorisieren);
-                if (response.status == 200) {
-                    alert("Das Rezept wurde zu den Favoriten hinzugefügt.");
-                }
-                else {
-                    alert("Das Rezept befindet sich bereits in ihrer Favoriten-Sammlung.");
-                }
+                alert("Rezept wurde zu den Favoriten hinzugefügt.");
             }
             else {
                 alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");

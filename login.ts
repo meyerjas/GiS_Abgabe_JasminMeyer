@@ -1,15 +1,12 @@
 
 namespace Rezeptesammlung {
 
-    window.localStorage.clear();
-    
-    async function LogInSetup(): Promise<void> {
-        let result: Response = await fetch(serverUrl + "logIn");
-        await result.text();
-    }
+    window.localStorage.clear(); //Wenn man sich ausloggt kommt man wieder zurück auf die login seite und der lokale speicher wird gelöscht.
+
 
     let einlogButton: HTMLFormElement = document.querySelector("#einlogButton");
     einlogButton?.addEventListener("click", einloggen);
+
 
     async function einloggen(_event: Event): Promise<void> {
         let nutzername: HTMLInputElement = document.querySelector("#nutzername");
@@ -19,7 +16,7 @@ namespace Rezeptesammlung {
             let urlEinloggen: string = serverUrl + "logIn/einloggen";
             urlEinloggen = urlEinloggen + "?nutzername=" + nutzername.value + "&password=" + passwort.value;
             let response: Response = await fetch(urlEinloggen);
-            
+
             if (response.status == 200) {
                 localStorage.setItem("status", "eingeloggt");
                 localStorage.setItem("nutzername", nutzername.value);
@@ -60,5 +57,4 @@ namespace Rezeptesammlung {
             alert("Bitte füllen Sie die erforderlichen Felder aus.");
         }
     }
-    LogInSetup();
 }

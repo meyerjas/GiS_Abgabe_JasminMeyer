@@ -26,20 +26,6 @@ async function handleRequest(_request, _response) {
             let rezeptArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(rezeptArray));
             break;
-        case "/alleRezepte/favorisieren":
-            let favoritenId = parameter.get("neuerFav");
-            let nutzerAngemeldet = parameter.get("nutzer");
-            let findQuery = { "nutzername": nutzerAngemeldet };
-            let upateQuery = { $set: { favoriten: { favoID: favoritenId } } };
-            let favStatus = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": nutzerAngemeldet, "_favoID": favoritenId }).hasNext();
-            if (favStatus) {
-                _response.statusCode = 409; //ist schon vorhanden 
-            }
-            else {
-                await mongoClient.db("Rezeptesammlung").collection("Nutzer").findOneAndUpdate(findQuery, upateQuery);
-                _response.statusCode = 200;
-            }
-            break;
         case "/favoriten":
             let favoritenArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(favoritenArray));
@@ -53,6 +39,14 @@ async function handleRequest(_request, _response) {
             let idParam = parameter.get("id");
             //https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#examples löschen von docs
             await mongoClient.db("Rezeptesammlung").collection("Rezepte").deleteOne({ "_id": new Mongo.ObjectId(idParam) });
+            break;
+        case "/meineRezepte/edit":
+            console.log("server edit is initiiert");
+            let titelChange = parameter.get("titelChange");
+            let anleitungChange = parameter.get("anleitungChange");
+            let zutatenChange = JSON.parse(parameter.get("zutatenChange"));
+            let idPm = parameter.get("id");
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ "_id": new Mongo.ObjectId(idPm) }, { $set: { "zutaten": zutatenChange, "titel": titelChange, "anleitung": anleitungChange } });
             break;
         case "/meineRezepte/neuesRezept":
             let titel = parameter.get("titel");
@@ -68,14 +62,6 @@ async function handleRequest(_request, _response) {
                     await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ titel: titel }, { $set: { "zutaten": parseZutaten } });
                 }
             }
-            break;
-        case "/meineRezepte/edit":
-            console.log("server edit is initiiert");
-            let titelChange = parameter.get("titelChange");
-            let anleitungChange = parameter.get("anleitungChange");
-            let zutatenChange = JSON.parse(parameter.get("zutatenChange"));
-            let idPm = parameter.get("id");
-            await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ "_id": new Mongo.ObjectId(idPm) }, { $set: { "zutaten": zutatenChange, "titel": titelChange, "anleitung": anleitungChange } });
             break;
         case "/logIn/einloggen":
             console.log("Wir sind am einloggen.");

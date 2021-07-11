@@ -1,11 +1,7 @@
 "use strict";
 var Rezeptesammlung;
 (function (Rezeptesammlung) {
-    window.localStorage.clear();
-    async function LogInSetup() {
-        let result = await fetch(Rezeptesammlung.serverUrl + "logIn");
-        await result.text();
-    }
+    window.localStorage.clear(); //Wenn man sich ausloggt kommt man wieder zurück auf die login seite und der lokale speicher wird gelöscht.
     let einlogButton = document.querySelector("#einlogButton");
     einlogButton?.addEventListener("click", einloggen);
     async function einloggen(_event) {
@@ -52,6 +48,5 @@ var Rezeptesammlung;
             alert("Bitte füllen Sie die erforderlichen Felder aus.");
         }
     }
-    LogInSetup();
 })(Rezeptesammlung || (Rezeptesammlung = {}));
 //# sourceMappingURL=login.js.map

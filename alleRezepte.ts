@@ -6,14 +6,12 @@ namespace Rezeptesammlung {
         anleitung: string;
         autor: string;
         zutaten: string[];
-        favoriten: string[];
     }
 
     export interface Nutzer {
         _id: string;
         nutzername: string;
         passwort: string;
-        status: string;
     }
 
     async function RezepteZeigen(): Promise<void> {
@@ -68,7 +66,7 @@ namespace Rezeptesammlung {
 
         }
 
-        async function addToFavs(_event: Event): Promise <void> {
+        function addToFavs(_event: Event): void {
             //Rezeptauswahl
             let target: HTMLElement = <HTMLElement>_event.target;
             let index: number = parseInt(target.getAttribute("RezeptIndex"));
@@ -81,20 +79,8 @@ namespace Rezeptesammlung {
                 console.log(favorit);
                 favorit.push(auswahl);
                 localStorage.setItem(favoritenLocalStorage, JSON.stringify(favorit));
-
-                let favId: string = auswahl._id;
-                let nutzer: string = localStorage.getItem("nutzername");
+                alert("Rezept wurde zu den Favoriten hinzugefügt.");
                 
-                let urlFavorisieren: string = serverUrl + "alleRezepte/favorisieren";
-                urlFavorisieren = urlFavorisieren + "?neuerFav=" + favId + "&nutzer" + nutzer;
-                let response: Response = await fetch(urlFavorisieren);
-                
-                if (response.status == 200) {
-                    alert("Das Rezept wurde zu den Favoriten hinzugefügt.");
-                } else {
-                    alert("Das Rezept befindet sich bereits in ihrer Favoriten-Sammlung.");
-                }
-
             } else {
                 alert("Loggen Sie sich ein, um Rezepte zu favorisieren.");
                 location.href = "/logIn.html";

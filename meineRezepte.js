@@ -46,8 +46,8 @@ var Rezeptesammlung;
                 editButton.setAttribute("type", "button");
                 editButton.innerHTML = "Bearbeiten";
                 editButton.setAttribute("RezeptIndex", i.toString());
-                deleteButton?.addEventListener("click", löscheRezept); //Entfern-Event
-                editButton?.addEventListener("click", editRezept); //Bearbeitungs-Event
+                deleteButton?.addEventListener("click", löscheRezept);
+                editButton?.addEventListener("click", editRezept);
             }
         }
         async function löscheRezept(_event) {
@@ -61,7 +61,6 @@ var Rezeptesammlung;
             await fetch(urlLöschen);
             location.reload(); //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
         }
-        //Bearbeitungs-Event
         function editRezept(_event) {
             console.log("editButton geklickt.");
             let target = _event.target;
@@ -71,6 +70,7 @@ var Rezeptesammlung;
             let ogTitel = rezeptDivMitId.querySelector(".rezeptTitel");
             let ogZutaten = rezeptDivMitId.querySelectorAll(".rezeptZutaten");
             let ogAnleitung = rezeptDivMitId.querySelector(".rezeptAnleitung");
+            //Buttontext ändern zu "speichern"
             let editButton = document.querySelector(".editButton");
             editButton.innerHTML = "Speichern";
             editButton?.addEventListener("click", speichern);
