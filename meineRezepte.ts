@@ -4,11 +4,11 @@ namespace Rezeptesammlung {
         let result: Response = await fetch(serverUrl + "meineRezepte");
         let rezepte: Rezept[] = JSON.parse(await result.text());
         let nutzername: string = localStorage.getItem("nutzername");
-        let rezeptDiv: HTMLDivElement = document.createElement("div");
+        
 
         //Erstellen der Rezeptdivs
         for (let i: number = 0; i < rezepte.length; i++) {
-
+            let rezeptDiv: HTMLDivElement = document.createElement("div");
             if (rezepte[i].autor == nutzername) {
 
                 rezeptDiv.classList.add("rezeptDiv");

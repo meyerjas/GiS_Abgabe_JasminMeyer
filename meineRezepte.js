@@ -5,9 +5,9 @@ var Rezeptesammlung;
         let result = await fetch(Rezeptesammlung.serverUrl + "meineRezepte");
         let rezepte = JSON.parse(await result.text());
         let nutzername = localStorage.getItem("nutzername");
-        let rezeptDiv = document.createElement("div");
         //Erstellen der Rezeptdivs
         for (let i = 0; i < rezepte.length; i++) {
+            let rezeptDiv = document.createElement("div");
             if (rezepte[i].autor == nutzername) {
                 rezeptDiv.classList.add("rezeptDiv");
                 rezeptDiv.id = "Rezept" + i.toString();
