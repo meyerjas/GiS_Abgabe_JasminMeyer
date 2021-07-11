@@ -5,15 +5,9 @@ namespace Rezeptesammlung {
         titel: string;
         anleitung: string;
         autor: string;
-        zutaten: Zutat[];
-        favorisiert: [];
+        zutaten: string[];
+        favoriten: string[];
     }
-
-    export interface Zutat {
-         name: string;
-         einheit: string;
-         anzahl: string;
-     }
 
     export interface Nutzer {
         _id: string;
@@ -22,10 +16,6 @@ namespace Rezeptesammlung {
         status: string;
     }
 
-    interface Favoriten {
-        _id: string;
-        _favoID: Object;
-    }
     async function RezepteZeigen(): Promise<void> {
         let result: Response = await fetch(serverUrl + "alleRezepte");
         let textAntwort: string = await result.text(); 
@@ -50,7 +40,7 @@ namespace Rezeptesammlung {
                 //Zutaten
                 let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
                 zutatenDiv.classList.add("rezeptZutaten");
-                zutatenDiv.innerHTML = (rezepte[i].zutaten[k].anzahl) + " " + rezepte[i].zutaten[k].einheit + " " + rezepte[i].zutaten[k].name;
+                zutatenDiv.innerHTML = (rezepte[i].zutaten[k]);
             }
             rezeptDiv.appendChild(document.createElement("hr"));
 

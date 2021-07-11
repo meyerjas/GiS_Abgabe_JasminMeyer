@@ -20,7 +20,7 @@ var Rezeptesammlung;
                 //Zutaten
                 let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
                 zutatenDiv.classList.add("rezeptZutaten");
-                zutatenDiv.innerHTML = (rezepte[i].zutaten[k].anzahl) + " " + rezepte[i].zutaten[k].einheit + " " + rezepte[i].zutaten[k].name;
+                zutatenDiv.innerHTML = (rezepte[i].zutaten[k]);
             }
             rezeptDiv.appendChild(document.createElement("hr"));
             //Anleitung

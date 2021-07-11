@@ -8,7 +8,7 @@ interface Nutzer {
     nutzername: string;
     passwort: string;
     status: string;
-    favoriten: Favoriten[];
+    favoriten: string[];
 }
 
 interface Rezept {
@@ -16,20 +16,10 @@ interface Rezept {
     titel: string;
     anleitung: string;
     autor: string;
-    zutaten: Zutat[];
+    zutaten: string[];
 }
 
-interface Zutat {
-    name: string;
-    anzahl: string;
-    einheit: string;
-}
 
-interface Favoriten {
-    _id: string;
-    _favoID: Mongo.ObjectId;
-
-}
 
 let port: number | string | undefined = process.env.PORT; //Port von Heroku
 if (port == undefined)
@@ -69,7 +59,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             let favoritenId: string = parameter.get("neuerFav");
             let nutzerAngemeldet: string = parameter.get ("nutzer");
             let findQuery: Object = {"nutzername": nutzerAngemeldet};
-            let upateQuery: Object = {$set: {_favoID: favoritenId}};
+            let upateQuery: Object = {$set: { favoriten: {favoID: favoritenId}}};
             let favStatus: boolean = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({"nutzername": nutzerAngemeldet, "_favoID": favoritenId}).hasNext();
             
             if (favStatus) {
@@ -80,7 +70,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             }    
         
             break;
-        //wenn bei Url /favoriten dran...    
+           
         case "/favoriten":
             let favoritenArray: Rezept[] = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(favoritenArray));
@@ -94,15 +84,42 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
 
             break;
 
+        case "/meineRezepte/delete":
+            console.log("es is heiß hier ersma löschen alla");
+            let idParam: string = parameter.get("id");
+
+            //https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#examples löschen von docs
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").deleteOne({"_id": new Mongo.ObjectId(idParam)});
+            
+            break;
+
         case "/meineRezepte/neuesRezept":
             let titel: string = parameter.get("titel");
             let anleitung: string = parameter.get("anleitung");
-            let zutaten: string = parameter.get("zutaten");
+            let parseZutaten: string[] = JSON.parse(parameter.get("zutaten"));
             let autor: string = parameter.get("autor");
+            console.log(parseZutaten);
             
-            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({"titel": titel, "anleitung": anleitung, "autor": autor, "zutaten": zutaten});
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({"titel": titel, "anleitung": anleitung, "autor": autor});
             
-    
+            for (let k: number = 0; k < parseZutaten.length; k++) {
+                if (parseZutaten[k] != "" || undefined) {
+                    console.log(parseZutaten[k]);
+                    //https://www.tabnine.com/code/javascript/functions/mongodb/Collection/findOneAndUpdate
+                    await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({titel: titel}, {$set: {"zutaten": parseZutaten}});  
+                } 
+            }
+            break;
+
+        case "/meineRezepte/edit":
+            console.log("server edit is initiiert");
+            let titelChange: string = parameter.get("titelChange");
+            let anleitungChange: string = parameter.get("anleitungChange");
+            let zutatenChange: string[] = JSON.parse(parameter.get("zutatenChange"));
+            let idPm: string = parameter.get("id");
+            
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({"_id": new Mongo.ObjectId(idPm)}, {$set: {"zutaten": zutatenChange, "titel": titelChange, "anleitung": anleitungChange}});  
+
             break;
 
         case "/logIn/einloggen":

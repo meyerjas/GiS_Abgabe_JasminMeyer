@@ -4,12 +4,13 @@ var Rezeptesammlung;
     async function meineRezepteZeigen() {
         let result = await fetch(Rezeptesammlung.serverUrl + "meineRezepte");
         let rezepte = JSON.parse(await result.text());
-        let rezeptDiv = document.createElement("div");
         let nutzername = localStorage.getItem("nutzername");
+        let rezeptDiv = document.createElement("div");
         //Erstellen der Rezeptdivs
         for (let i = 0; i < rezepte.length; i++) {
             if (rezepte[i].autor == nutzername) {
                 rezeptDiv.classList.add("rezeptDiv");
+                rezeptDiv.id = "Rezept" + i.toString();
                 document.querySelector("#meineRezepte").appendChild(rezeptDiv);
                 //Rezeptname
                 let titelDiv = rezeptDiv.appendChild(document.createElement("div"));
@@ -20,7 +21,7 @@ var Rezeptesammlung;
                     //Zutaten
                     let zutatenDiv = rezeptDiv.appendChild(document.createElement("div"));
                     zutatenDiv.classList.add("rezeptZutaten");
-                    zutatenDiv.innerHTML = (rezepte[i].zutaten[k].anzahl) + " " + rezepte[i].zutaten[k].einheit + " " + rezepte[i].zutaten[k].name;
+                    zutatenDiv.innerHTML = (rezepte[i].zutaten[k]);
                 }
                 rezeptDiv.appendChild(document.createElement("hr"));
                 //Anleitung
@@ -50,20 +51,49 @@ var Rezeptesammlung;
                 //Bearbeitungs-Event
                 editButton?.addEventListener("click", editRezept);
             }
-            function löscheRezept(_event) {
-                let target = _event.target;
-                let index = parseInt(target.getAttribute("RezeptIndex"));
-                //lösche das Rezept aus der DB.
-                delete rezepte[index];
-                //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
-                location.reload();
-            }
-            //Bearbeitungs-Event
-            function editRezept(_event) {
-                let target = _event.target;
-                let index = parseInt(target.getAttribute("RezeptIndex"));
-                //speicher die Changes am Rezept in der DB.
-                //lädt die Seite neu, weil was geändert wurde und das angezeigt werden soll
+        }
+        async function löscheRezept(_event) {
+            let target = _event.target;
+            let index = parseInt(target.getAttribute("RezeptIndex"));
+            let idInd = rezepte[index]._id;
+            alert("Achtung! Dieses Rezept wird hiermit gelöscht!");
+            let urlLöschen = Rezeptesammlung.serverUrl + "meineRezepte/delete";
+            urlLöschen = urlLöschen + "?id=" + idInd;
+            console.log(urlLöschen);
+            let response = await fetch(urlLöschen);
+            //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
+            location.reload();
+        }
+        //Bearbeitungs-Event
+        function editRezept(_event) {
+            console.log("editButton geklickt.");
+            let target = _event.target;
+            let index = parseInt(target.getAttribute("RezeptIndex"));
+            let idInd = rezepte[index]._id;
+            let rezeptDivMitId = document.getElementById("Rezept" + index);
+            let ogTitel = rezeptDivMitId.querySelector(".rezeptTitel");
+            let ogZutaten = rezeptDivMitId.querySelectorAll(".rezeptZutaten");
+            let ogAnleitung = rezeptDivMitId.querySelector(".rezeptAnleitung");
+            let editButton = document.querySelector(".editButton");
+            editButton.innerHTML = "Speichern";
+            editButton?.addEventListener("click", speichern);
+            //https://codepen.io/JoannaEl/pen/ZjaBvr um die Felder bearbeiten zu können.
+            ogTitel.contentEditable = "true";
+            ogAnleitung.contentEditable = "true";
+            ogZutaten.forEach(function (zutatfeld) {
+                zutatfeld.contentEditable = "true";
+            });
+            async function speichern(_event) {
+                console.log("Wir sind am Speichern.");
+                let ogZutatenArray = [];
+                ogZutaten.forEach(function (zutatfeld) {
+                    ogZutatenArray.push(zutatfeld.innerHTML);
+                });
+                let urlEdit = Rezeptesammlung.serverUrl + "meineRezepte/edit";
+                urlEdit = urlEdit + "?titelChange=" + ogTitel.innerHTML + "&id=" + idInd + "&zutatenChange=" + JSON.stringify(ogZutatenArray) + "&anleitungChange=" + ogAnleitung.innerHTML;
+                console.log(urlEdit);
+                let response = await fetch(urlEdit);
+                console.log("gespeichert.");
                 location.reload();
             }
         }
@@ -77,17 +107,17 @@ var Rezeptesammlung;
         let autor = localStorage.getItem("nutzername");
         let zutatenArray = [];
         for (let i = 1; i <= 10; i++) {
-            let zutatenListe = document.querySelector("#zut" + i);
-            let neueZutatenAnzahlInput = zutatenListe.querySelector(".zutAnz");
-            let neueZutatenEinheitInput = zutatenListe.querySelector(".zutEin");
-            let neueZutatenNameInput = zutatenListe.querySelector(".zutName");
-            zutatenArray[i] = { "anzahl": neueZutatenAnzahlInput.value, "einheit": neueZutatenEinheitInput.value, "name": neueZutatenNameInput.value };
+            let zutatenListe = document.querySelector("#zutat" + i);
+            let zutatenListeWert = zutatenListe.value;
+            if (zutatenListeWert[i] != null || undefined || "") {
+                zutatenArray.push(zutatenListeWert);
+            }
         }
         let urlNeuesRezept = Rezeptesammlung.serverUrl + "meineRezepte/neuesRezept";
-        urlNeuesRezept = urlNeuesRezept + "?titel=" + neuerTitel.value + "&anleitung=" + neueAnleitung.value + "&autor=" + autor + "&zutaten" + JSON.stringify(zutatenArray);
+        urlNeuesRezept = urlNeuesRezept + "?titel=" + neuerTitel.value + "&anleitung=" + neueAnleitung.value + "&autor=" + autor + "&zutaten=" + JSON.stringify(zutatenArray);
         console.log(urlNeuesRezept);
         let response = await fetch(urlNeuesRezept);
-        location.reload();
+        //location.reload();
     }
 })(Rezeptesammlung || (Rezeptesammlung = {}));
 //# sourceMappingURL=meineRezepte.js.map

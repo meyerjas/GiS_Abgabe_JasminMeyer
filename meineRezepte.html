@@ -26,65 +26,22 @@
         <label for="titel"> Titel:</label>
         <input type="text" id="titel" name="titel"><br>
         <label for="anleitung"> Anleitung:</label>
-        <textarea id="anleitung" name="anleitung" rows="10" cols="36"></textarea><br>
+        <textarea id="anleitung" name="anleitung" rows="10" cols="36"></textarea>
 
-        <table id="neueZutatenTabelle">
-            <tr>
-                <td>Anzahl</td>
-                <td>Einheit</td>
-                <td>Zutat</td>
-            </tr>
-            <tr id="zut1">
-                <td><input type="text" class="zutAnz" id="zutat1anzahl" name="zutat1anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat1Einheit" name="zutat1Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat1Name" name="zutat1Name"></td>
-            </tr>
-            <tr id="zut2">
-                <td><input type="text" class="zutAnz" id="zutat2anzahl" name="zutat2anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat2Einheit" name="zutat2Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat2Name" name="zutat2Name"></td>
-            </tr>
-            <tr id="zut3">
-                <td><input type="text" class="zutAnz" id="zutat3anzahl" name="zutat3anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat3Einheit" name="zutat3Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat3Name" name="zutat3Name"></td>
-            </tr>
-            <tr id="zut4">
-                <td><input type="text" class="zutAnz" id="zutat4anzahl" name="zutat4anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat4Einheit" name="zutat4Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat4Name" name="zutat4Name"></td>
-            </tr>
-            <tr id="zut5">
-                <td><input type="text" class="zutAnz" id="zutat5anzahl" name="zutat5anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat5Einheit" name="zutat5Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat5Name" name="zutat5Name"></td>
-            </tr>
-            <tr id="zut6">
-                <td><input type="text" class="zutAnz" id="zutat6anzahl" name="zutat6anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat6Einheit" name="zutat6Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat6Name" name="zutat6Name"></td>
-            </tr>
-            <tr id="zut7">
-                <td><input type="text" class="zutAnz" id="zutat7anzahl" name="zutat7anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat7Einheit" name="zutat7Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat7Name" name="zutat7Name"></td>
-            </tr>
-            <tr id="zut8">
-                <td><input type="text" class="zutAnz" id="zutat8anzahl" name="zutat8anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat8Einheit" name="zutat8Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat8Name" name="zutat8Name"></td>
-            </tr>
-            <tr id="zut9">
-                <td><input type="text" class="zutAnz" id="zutat9anzahl" name="zutat9anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat9Einheit" name="zutat9Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat9Name" name="zutat9Name"></td>
-            </tr>
-            <tr id="zut10">
-                <td><input type="text" class="zutAnz" id="zutat10anzahl" name="zutat10anzahl"></td>
-                <td><input type="text" class="zutEin" id="zutat10Einheit" name="zutat10Einheit"></td>
-                <td><input type="text" class="zutName" id="zutat10Name" name="zutat10Name"></td>
-            </tr>
-        </table> <br>
+        <p>Zutaten:</p>
+        <div id="formZutatenDiv">
+            <input type="text" class="zutaten" id="zutat1" name="zutat1">
+            <input type="text" class="zutaten" id="zutat2" name="zutat2">
+            <input type="text" class="zutaten" id="zutat3" name="zutat3">
+            <input type="text" class="zutaten" id="zutat4" name="zutat4">
+            <input type="text" class="zutaten" id="zutat5" name="zutat5">
+            <input type="text" class="zutaten" id="zutat6" name="zutat6">
+            <input type="text" class="zutaten" id="zutat7" name="zutat7">
+            <input type="text" class="zutaten" id="zutat8" name="zutat8">
+            <input type="text" class="zutaten" id="zutat9" name="zutat9">
+            <input type="text" class="zutaten" id="zutat10" name="zutat10">
+        </div>
+        <br>
         <button type="button" id="absenden" name="absenden">Teilen</button>
     </form>
 

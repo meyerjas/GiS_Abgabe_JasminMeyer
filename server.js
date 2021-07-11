@@ -30,7 +30,7 @@ async function handleRequest(_request, _response) {
             let favoritenId = parameter.get("neuerFav");
             let nutzerAngemeldet = parameter.get("nutzer");
             let findQuery = { "nutzername": nutzerAngemeldet };
-            let upateQuery = { $set: { _favoID: favoritenId } };
+            let upateQuery = { $set: { favoriten: { favoID: favoritenId } } };
             let favStatus = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": nutzerAngemeldet, "_favoID": favoritenId }).hasNext();
             if (favStatus) {
                 _response.statusCode = 409; //ist schon vorhanden 
@@ -40,7 +40,6 @@ async function handleRequest(_request, _response) {
                 _response.statusCode = 200;
             }
             break;
-        //wenn bei Url /favoriten dran...    
         case "/favoriten":
             let favoritenArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(favoritenArray));
@@ -49,12 +48,34 @@ async function handleRequest(_request, _response) {
             let meineRezepteArray = await mongoClient.db("Rezeptesammlung").collection("Rezepte").find().toArray();
             _response.write(JSON.stringify(meineRezepteArray));
             break;
+        case "/meineRezepte/delete":
+            console.log("es is heiß hier ersma löschen alla");
+            let idParam = parameter.get("id");
+            //https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#examples löschen von docs
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").deleteOne({ "_id": new Mongo.ObjectId(idParam) });
+            break;
         case "/meineRezepte/neuesRezept":
             let titel = parameter.get("titel");
             let anleitung = parameter.get("anleitung");
-            let zutaten = parameter.get("zutaten");
+            let parseZutaten = JSON.parse(parameter.get("zutaten"));
             let autor = parameter.get("autor");
-            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({ "titel": titel, "anleitung": anleitung, "autor": autor, "zutaten": zutaten });
+            console.log(parseZutaten);
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").insertOne({ "titel": titel, "anleitung": anleitung, "autor": autor });
+            for (let k = 0; k < parseZutaten.length; k++) {
+                if (parseZutaten[k] != "" || undefined) {
+                    console.log(parseZutaten[k]);
+                    //https://www.tabnine.com/code/javascript/functions/mongodb/Collection/findOneAndUpdate
+                    await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ titel: titel }, { $set: { "zutaten": parseZutaten } });
+                }
+            }
+            break;
+        case "/meineRezepte/edit":
+            console.log("server edit is initiiert");
+            let titelChange = parameter.get("titelChange");
+            let anleitungChange = parameter.get("anleitungChange");
+            let zutatenChange = JSON.parse(parameter.get("zutatenChange"));
+            let idPm = parameter.get("id");
+            await mongoClient.db("Rezeptesammlung").collection("Rezepte").findOneAndUpdate({ "_id": new Mongo.ObjectId(idPm) }, { $set: { "zutaten": zutatenChange, "titel": titelChange, "anleitung": anleitungChange } });
             break;
         case "/logIn/einloggen":
             console.log("Wir sind am einloggen.");

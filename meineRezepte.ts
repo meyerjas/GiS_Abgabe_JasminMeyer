@@ -3,9 +3,8 @@ namespace Rezeptesammlung {
     async function meineRezepteZeigen(): Promise<void> {
         let result: Response = await fetch(serverUrl + "meineRezepte");
         let rezepte: Rezept[] = JSON.parse(await result.text());
-        let rezeptDiv: HTMLDivElement = document.createElement("div");
         let nutzername: string = localStorage.getItem("nutzername");
-
+        let rezeptDiv: HTMLDivElement = document.createElement("div");
 
         //Erstellen der Rezeptdivs
         for (let i: number = 0; i < rezepte.length; i++) {
@@ -13,6 +12,7 @@ namespace Rezeptesammlung {
             if (rezepte[i].autor == nutzername) {
 
                 rezeptDiv.classList.add("rezeptDiv");
+                rezeptDiv.id = "Rezept" + i.toString();
                 document.querySelector("#meineRezepte").appendChild(rezeptDiv);
 
                 //Rezeptname
@@ -26,7 +26,7 @@ namespace Rezeptesammlung {
                     //Zutaten
                     let zutatenDiv: HTMLDivElement = rezeptDiv.appendChild(document.createElement("div"));
                     zutatenDiv.classList.add("rezeptZutaten");
-                    zutatenDiv.innerHTML = (rezepte[i].zutaten[k].anzahl) + " " + rezepte[i].zutaten[k].einheit + " " + rezepte[i].zutaten[k].name;
+                    zutatenDiv.innerHTML = (rezepte[i].zutaten[k]);
 
                 }
 
@@ -44,6 +44,7 @@ namespace Rezeptesammlung {
                 autorDiv.classList.add("rezeptAutor");
                 autorDiv.innerHTML = "Autor: " + rezepte[i].autor;
                 rezeptDiv.appendChild(document.createElement("br"));
+
 
                 //Button zum Löschen von Rezepten
                 let deleteButton: HTMLButtonElement = rezeptDiv.appendChild(document.createElement("button"));
@@ -64,31 +65,71 @@ namespace Rezeptesammlung {
                 //Bearbeitungs-Event
                 editButton?.addEventListener("click", editRezept);
             }
-
-            function löscheRezept(_event: Event): void {
-                let target: HTMLElement = <HTMLElement>_event.target;
-                let index: number = parseInt(target.getAttribute("RezeptIndex"));
-
-                //lösche das Rezept aus der DB.
-                delete rezepte[index];
-
-                //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
-                location.reload();
-            }
-
-            //Bearbeitungs-Event
-            function editRezept(_event: Event): void {
-                let target: HTMLElement = <HTMLElement>_event.target;
-                let index: number = parseInt(target.getAttribute("RezeptIndex"));
-
-
-                //speicher die Changes am Rezept in der DB.
-
-                //lädt die Seite neu, weil was geändert wurde und das angezeigt werden soll
-                location.reload();
-            }
         }
 
+        async function löscheRezept(_event: Event): Promise<void> {
+            let target: HTMLElement = <HTMLElement>_event.target;
+            let index: number = parseInt(target.getAttribute("RezeptIndex"));
+            let idInd: string = rezepte[index]._id;
+
+            alert("Achtung! Dieses Rezept wird hiermit gelöscht!");
+
+            let urlLöschen: string = serverUrl + "meineRezepte/delete";
+            urlLöschen = urlLöschen + "?id=" + idInd;
+            console.log(urlLöschen);
+            let response: Response = await fetch(urlLöschen);
+
+            //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
+            location.reload();
+        }
+
+        //Bearbeitungs-Event
+        function editRezept(_event: Event): void {
+            console.log("editButton geklickt.");
+            let target: HTMLElement = <HTMLElement>_event.target;
+            let index: number = parseInt(target.getAttribute("RezeptIndex"));
+            let idInd: string = rezepte[index]._id;
+
+            let rezeptDivMitId: HTMLElement = document.getElementById("Rezept" + index);
+           
+            let ogTitel: HTMLElement = rezeptDivMitId.querySelector(".rezeptTitel");
+            let ogZutaten: NodeListOf<HTMLElement> = rezeptDivMitId.querySelectorAll(".rezeptZutaten");
+            let ogAnleitung: HTMLElement = rezeptDivMitId.querySelector(".rezeptAnleitung");
+
+            let editButton: HTMLButtonElement = document.querySelector(".editButton");
+            editButton.innerHTML = "Speichern";
+
+            editButton?.addEventListener("click", speichern);
+
+            //https://codepen.io/JoannaEl/pen/ZjaBvr um die Felder bearbeiten zu können.
+            ogTitel.contentEditable = "true";
+            ogAnleitung.contentEditable = "true";
+
+            ogZutaten.forEach(function(zutatfeld: HTMLElement) {
+               zutatfeld.contentEditable = "true";
+              });
+            
+           
+
+            async function speichern(_event: Event): Promise<void> {
+                console.log("Wir sind am Speichern.");
+    
+                let ogZutatenArray: string[] = [];
+
+                ogZutaten.forEach(function(zutatfeld: HTMLElement) {
+                    ogZutatenArray.push(zutatfeld.innerHTML);
+                   });
+
+                let urlEdit: string = serverUrl + "meineRezepte/edit";
+                urlEdit = urlEdit + "?titelChange=" + ogTitel.innerHTML + "&id=" + idInd + "&zutatenChange=" + JSON.stringify(ogZutatenArray) + "&anleitungChange=" + ogAnleitung.innerHTML;
+                console.log(urlEdit);
+                let response: Response = await fetch(urlEdit);
+                console.log("gespeichert.");
+
+                location.reload();
+            }
+            
+        }
     }
     meineRezepteZeigen();
 
@@ -100,30 +141,21 @@ namespace Rezeptesammlung {
         let neuerTitel: HTMLInputElement = document.querySelector("#titel");
         let neueAnleitung: HTMLInputElement = document.querySelector("#anleitung");
         let autor: string = localStorage.getItem("nutzername");
-        
-        let zutatenArray: Zutat[] = [];
+        let zutatenArray: string[] = [];
 
         for (let i: number = 1; i <= 10; i++) {
-            let zutatenListe: HTMLInputElement = document.querySelector("#zut" + i);
-            let neueZutatenAnzahlInput: HTMLInputElement = zutatenListe.querySelector(".zutAnz");
-            let neueZutatenEinheitInput: HTMLInputElement = zutatenListe.querySelector(".zutEin");
-            let neueZutatenNameInput: HTMLInputElement = zutatenListe.querySelector(".zutName");
-            
-            zutatenArray[i] = { "anzahl": neueZutatenAnzahlInput.value, "einheit": neueZutatenEinheitInput.value, "name": neueZutatenNameInput.value };
+            let zutatenListe: HTMLInputElement = document.querySelector("#zutat" + i);
+            let zutatenListeWert: string = zutatenListe.value;
+            if (zutatenListeWert[i] != null || undefined || "") {
+                zutatenArray.push(zutatenListeWert);
+            }
         }
-
-
         let urlNeuesRezept: string = serverUrl + "meineRezepte/neuesRezept";
-        urlNeuesRezept = urlNeuesRezept + "?titel=" + neuerTitel.value + "&anleitung=" + neueAnleitung.value + "&autor=" + autor + "&zutaten" + JSON.stringify(zutatenArray);
+        urlNeuesRezept = urlNeuesRezept + "?titel=" + neuerTitel.value + "&anleitung=" + neueAnleitung.value + "&autor=" + autor + "&zutaten=" + JSON.stringify(zutatenArray);
         console.log(urlNeuesRezept);
         let response: Response = await fetch(urlNeuesRezept);
-        location.reload();
-
-
+        //location.reload();
     }
-
-
-
 }
 
 

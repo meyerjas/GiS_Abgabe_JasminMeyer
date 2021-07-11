@@ -101,12 +101,8 @@ hr {
     font-size: medium;
 }
 
-.zutAnz {
-    width: 20px;
-}
-
-.zutEin {
-    width: 40px;
+.zutaten {
+    width: 255px;
 }
 
 #neuesRezept {
@@ -124,7 +120,7 @@ hr {
     justify-content: center;
 }
 
-button {
+.editButton button {
     border-radius: 20px;
 }
 
