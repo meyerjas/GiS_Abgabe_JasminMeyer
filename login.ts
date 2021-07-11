@@ -20,7 +20,7 @@ namespace Rezeptesammlung {
             if (response.status == 200) {
                 localStorage.setItem("status", "eingeloggt");
                 localStorage.setItem("nutzername", nutzername.value);
-                location.href = "/alleRezepte.html";
+                location.href = "alleRezepte.html";
 
             } else {
                 localStorage.setItem("status", "augeloggt");
