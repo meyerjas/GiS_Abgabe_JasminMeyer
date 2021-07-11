@@ -119,7 +119,6 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
             console.log("wir sind am Reg");
             let neuerNutzername: string = parameter.get("neuerNN");
             let neuesPw: string = parameter.get("neuesPW");
-            let setStatusEingeloggt: string = "eingeloggt";
 
             let nutzerVergleichReg: boolean = await mongoClient.db("Rezeptesammlung").collection("Nutzer").find({ "nutzername": neuerNutzername }).hasNext();
 
@@ -128,7 +127,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Ser
                 _response.statusCode = 401;
 
             } else {
-                await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ "nutzername": neuerNutzername, "passwort": neuesPw, "status": setStatusEingeloggt });
+                await mongoClient.db("Rezeptesammlung").collection("Nutzer").insertOne({ "nutzername": neuerNutzername, "passwort": neuesPw });
                 _response.statusCode = 200;
             }
 
