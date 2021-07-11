@@ -68,7 +68,7 @@ button:active {
 }
 
 .rezeptDiv {
-    background-image: url(pictures/HG.png);
+    background-image: url("pictures/HG.png");
     color: white;
     font-size: small;
     margin: 10px;
@@ -86,7 +86,7 @@ button:active {
 
 .bgBox {
     background-image: url("pictures/HG.png");
-    width: 40px;
+    width: 400px;
     height: 600px;
     padding: 10px;
     border-radius: 5px;
