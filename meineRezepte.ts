@@ -60,10 +60,9 @@ namespace Rezeptesammlung {
                 editButton.innerHTML = "Bearbeiten";
                 editButton.setAttribute("RezeptIndex", i.toString());
 
-                //Entfern-Event
-                deleteButton?.addEventListener("click", löscheRezept);
-                //Bearbeitungs-Event
-                editButton?.addEventListener("click", editRezept);
+                
+                deleteButton?.addEventListener("click", löscheRezept); //Entfern-Event
+                editButton?.addEventListener("click", editRezept); //Bearbeitungs-Event
             }
         }
 
@@ -77,10 +76,9 @@ namespace Rezeptesammlung {
             let urlLöschen: string = serverUrl + "meineRezepte/delete";
             urlLöschen = urlLöschen + "?id=" + idInd;
             console.log(urlLöschen);
-            let response: Response = await fetch(urlLöschen);
+            await fetch(urlLöschen);
 
-            //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
-            location.reload();
+            location.reload(); //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
         }
 
         //Bearbeitungs-Event
@@ -123,7 +121,7 @@ namespace Rezeptesammlung {
                 let urlEdit: string = serverUrl + "meineRezepte/edit";
                 urlEdit = urlEdit + "?titelChange=" + ogTitel.innerHTML + "&id=" + idInd + "&zutatenChange=" + JSON.stringify(ogZutatenArray) + "&anleitungChange=" + ogAnleitung.innerHTML;
                 console.log(urlEdit);
-                let response: Response = await fetch(urlEdit);
+                await fetch(urlEdit);
                 console.log("gespeichert.");
 
                 location.reload();
@@ -153,8 +151,8 @@ namespace Rezeptesammlung {
         let urlNeuesRezept: string = serverUrl + "meineRezepte/neuesRezept";
         urlNeuesRezept = urlNeuesRezept + "?titel=" + neuerTitel.value + "&anleitung=" + neueAnleitung.value + "&autor=" + autor + "&zutaten=" + JSON.stringify(zutatenArray);
         console.log(urlNeuesRezept);
-        let response: Response = await fetch(urlNeuesRezept);
-        //location.reload();
+        await fetch(urlNeuesRezept);
+        location.reload();
     }
 }
 

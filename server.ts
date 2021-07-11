@@ -2,15 +2,6 @@ import * as Http from "http";
 import * as Url from "url";
 import * as Mongo from "mongodb";
 
-
-interface Nutzer {
-    _id: string;
-    nutzername: string;
-    passwort: string;
-    status: string;
-    favoriten: string[];
-}
-
 interface Rezept {
     _id: string;
     titel: string;
@@ -18,8 +9,6 @@ interface Rezept {
     autor: string;
     zutaten: string[];
 }
-
-
 
 let port: number | string | undefined = process.env.PORT; //Port von Heroku
 if (port == undefined)

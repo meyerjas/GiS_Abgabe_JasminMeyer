@@ -46,10 +46,8 @@ var Rezeptesammlung;
                 editButton.setAttribute("type", "button");
                 editButton.innerHTML = "Bearbeiten";
                 editButton.setAttribute("RezeptIndex", i.toString());
-                //Entfern-Event
-                deleteButton?.addEventListener("click", löscheRezept);
-                //Bearbeitungs-Event
-                editButton?.addEventListener("click", editRezept);
+                deleteButton?.addEventListener("click", löscheRezept); //Entfern-Event
+                editButton?.addEventListener("click", editRezept); //Bearbeitungs-Event
             }
         }
         async function löscheRezept(_event) {
@@ -60,9 +58,8 @@ var Rezeptesammlung;
             let urlLöschen = Rezeptesammlung.serverUrl + "meineRezepte/delete";
             urlLöschen = urlLöschen + "?id=" + idInd;
             console.log(urlLöschen);
-            let response = await fetch(urlLöschen);
-            //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
-            location.reload();
+            await fetch(urlLöschen);
+            location.reload(); //lädt die Seite neu, weil was entfernt wurde und das angezeigt werden soll
         }
         //Bearbeitungs-Event
         function editRezept(_event) {
@@ -92,7 +89,7 @@ var Rezeptesammlung;
                 let urlEdit = Rezeptesammlung.serverUrl + "meineRezepte/edit";
                 urlEdit = urlEdit + "?titelChange=" + ogTitel.innerHTML + "&id=" + idInd + "&zutatenChange=" + JSON.stringify(ogZutatenArray) + "&anleitungChange=" + ogAnleitung.innerHTML;
                 console.log(urlEdit);
-                let response = await fetch(urlEdit);
+                await fetch(urlEdit);
                 console.log("gespeichert.");
                 location.reload();
             }
@@ -116,8 +113,8 @@ var Rezeptesammlung;
         let urlNeuesRezept = Rezeptesammlung.serverUrl + "meineRezepte/neuesRezept";
         urlNeuesRezept = urlNeuesRezept + "?titel=" + neuerTitel.value + "&anleitung=" + neueAnleitung.value + "&autor=" + autor + "&zutaten=" + JSON.stringify(zutatenArray);
         console.log(urlNeuesRezept);
-        let response = await fetch(urlNeuesRezept);
-        //location.reload();
+        await fetch(urlNeuesRezept);
+        location.reload();
     }
 })(Rezeptesammlung || (Rezeptesammlung = {}));
 //# sourceMappingURL=meineRezepte.js.map
