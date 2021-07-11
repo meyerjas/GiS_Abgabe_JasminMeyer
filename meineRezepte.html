@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="meineStyle.css">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
     <script src="meineRezepte.js" defer></script>
@@ -12,7 +11,7 @@
 </head>
 
 <body>
-    <header>
+    <div id="header">
         <h1>Meine Rezepte</h1>
         <div id="navbar">
             <a href="alleRezepte.html">Alle</a><br>
@@ -20,36 +19,36 @@
             <a href="meineRezepte.html">Meine Rezepte</a><br>
             <a href="logIn.html">Ausloggen</a>
         </div>
-    </header>
+        </header>
 
-    <form id="neuesRezept" name="neuesRezept" method="GET">
-        <h3>Teile Dein neues Rezept mit uns!</h3>
-        <label for="titel"> Titel:</label>
-        <input type="text" id="titel" name="titel"><br>
-        <label for="anleitung"> Anleitung:</label>
-        <textarea id="anleitung" name="anleitung" rows="10" cols="36"></textarea>
 
-        <p>Zutaten:</p>
-        <div id="formZutatenDiv">
-            <input type="text" class="zutaten" id="zutat1" name="zutat1">
-            <input type="text" class="zutaten" id="zutat2" name="zutat2">
-            <input type="text" class="zutaten" id="zutat3" name="zutat3">
-            <input type="text" class="zutaten" id="zutat4" name="zutat4">
-            <input type="text" class="zutaten" id="zutat5" name="zutat5">
-            <input type="text" class="zutaten" id="zutat6" name="zutat6">
-            <input type="text" class="zutaten" id="zutat7" name="zutat7">
-            <input type="text" class="zutaten" id="zutat8" name="zutat8">
-            <input type="text" class="zutaten" id="zutat9" name="zutat9">
-            <input type="text" class="zutaten" id="zutat10" name="zutat10">
+        <div id="meineRezepte">
+            <!--hier werden die selbst erstellten Rezepte angezeigt-->
         </div>
-        <br>
-        <button type="button" id="absenden" name="absenden">Teilen</button>
-    </form>
 
-    <div id="meineRezepte">
-        <!--hier werden die selbst erstellten Rezepte angezeigt-->
-    </div>
+        <form id="neuesRezept" name="neuesRezept" method="GET">
+            <h3>Teile Dein neues Rezept mit uns!</h3>
+            <label for="titel"> Titel:</label>
+            <input type="text" id="titel" name="titel"><br>
+            <label for="anleitung"> Anleitung:</label>
+            <textarea id="anleitung" name="anleitung" rows="10" cols="36"></textarea>
 
+            <p>Zutaten:</p>
+            <div id="formZutatenDiv">
+                <input type="text" class="zutaten" id="zutat1" name="zutat1">
+                <input type="text" class="zutaten" id="zutat2" name="zutat2">
+                <input type="text" class="zutaten" id="zutat3" name="zutat3">
+                <input type="text" class="zutaten" id="zutat4" name="zutat4">
+                <input type="text" class="zutaten" id="zutat5" name="zutat5">
+                <input type="text" class="zutaten" id="zutat6" name="zutat6">
+                <input type="text" class="zutaten" id="zutat7" name="zutat7">
+                <input type="text" class="zutaten" id="zutat8" name="zutat8">
+                <input type="text" class="zutaten" id="zutat9" name="zutat9">
+                <input type="text" class="zutaten" id="zutat10" name="zutat10">
+            </div>
+            <br>
+            <button type="button" id="absenden" name="absenden">Teilen</button>
+        </form>
 </body>
 
 </html>

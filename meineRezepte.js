@@ -46,6 +46,7 @@ var Rezeptesammlung;
                 editButton.setAttribute("type", "button");
                 editButton.innerHTML = "Bearbeiten";
                 editButton.setAttribute("RezeptIndex", i.toString());
+                editButton.id = "edBut" + i.toString();
                 deleteButton?.addEventListener("click", löscheRezept);
                 editButton?.addEventListener("click", editRezept);
             }
@@ -71,7 +72,7 @@ var Rezeptesammlung;
             let ogZutaten = rezeptDivMitId.querySelectorAll(".rezeptZutaten");
             let ogAnleitung = rezeptDivMitId.querySelector(".rezeptAnleitung");
             //Buttontext ändern zu "speichern"
-            let editButton = document.querySelector(".editButton");
+            let editButton = document.getElementById("edBut" + index);
             editButton.innerHTML = "Speichern";
             editButton?.addEventListener("click", speichern);
             //https://codepen.io/JoannaEl/pen/ZjaBvr um die Felder bearbeiten zu können.

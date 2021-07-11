@@ -59,6 +59,7 @@ namespace Rezeptesammlung {
                 editButton.setAttribute("type", "button");
                 editButton.innerHTML = "Bearbeiten";
                 editButton.setAttribute("RezeptIndex", i.toString());
+                editButton.id = "edBut" + i.toString();
 
                 
                 deleteButton?.addEventListener("click", löscheRezept); 
@@ -94,7 +95,7 @@ namespace Rezeptesammlung {
             let ogAnleitung: HTMLElement = rezeptDivMitId.querySelector(".rezeptAnleitung");
 
             //Buttontext ändern zu "speichern"
-            let editButton: HTMLButtonElement = document.querySelector(".editButton");
+            let editButton: HTMLElement = document.getElementById("edBut" + index);
             editButton.innerHTML = "Speichern";
             editButton?.addEventListener("click", speichern);
 
@@ -106,8 +107,6 @@ namespace Rezeptesammlung {
                zutatfeld.contentEditable = "true";
               });
             
-           
-
             async function speichern(_event: Event): Promise<void> {
                 console.log("Wir sind am Speichern.");
     
